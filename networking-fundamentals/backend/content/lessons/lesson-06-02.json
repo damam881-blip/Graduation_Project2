@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-06-02",
+  "courseId": "course-06",
+  "order": 2,
+  "title": {
+    "en": "Troubleshooting Methodology",
+    "ar": "منهجية استكشاف الأخطاء"
+  },
+  "summary": {
+    "en": "A repeatable process from symptom to root cause.",
+    "ar": "عملية قابلة للتكرار من الأعراض إلى السبب الجذري."
+  },
+  "estimatedMinutes": 25,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "A reliable method is: define the problem, gather information, form a hypothesis, test one change, verify the fix, and document the result.",
+        "ar": "الطريقة الموثوقة هي: تحديد المشكلة، وجمع المعلومات، ووضع فرضية، واختبار تغيير واحد، والتحقق من الإصلاح، وتوثيق النتيجة."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "For \"no internet\", check the link light, then the IP configuration, then ping the gateway, and finally test DNS resolution. Each step narrows the cause.",
+        "ar": "عند مشكلة \"لا يوجد إنترنت\"، افحص ضوء الرابط، ثم إعدادات IP، ثم اختبر البوابة، وأخيرا اختبر ترجمة DNS. كل خطوة تضيق نطاق السبب."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "Change one variable at a time and record what you observed. Escalate with evidence rather than guesses, and close by confirming the user's original symptom is gone.",
+        "ar": "غيّر متغيرا واحدا في كل مرة وسجل ما لاحظته. صعّد المشكلة مع الأدلة بدلا من التخمين، واختم بالتأكد من زوال العَرَض الأصلي للمستخدم."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "What should you do first when troubleshooting?",
+      "ar": "ماذا يجب أن تفعل أولا عند استكشاف الأخطاء؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "Define the problem and gather information",
+          "ar": "تحديد المشكلة وجمع المعلومات"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "Replace all hardware immediately",
+          "ar": "استبدال كل الأجهزة فورا"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "Change several settings at once",
+          "ar": "تغيير عدة إعدادات دفعة واحدة"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c06-l02",
+  "status": "approved",
+  "contentVersion": "v003"
+}

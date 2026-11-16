@@ -1,0 +1,20 @@
+{
+  "courseId": "course-01",
+  "order": 1,
+  "title": {
+    "en": "Networking Fundamentals",
+    "ar": "أساسيات الشبكات"
+  },
+  "description": {
+    "en": "What a network is, how devices connect, topologies, and the OSI and TCP/IP models.",
+    "ar": "ما هي الشبكة، وكيف تتصل الأجهزة، والطوبولوجيات، ونماذج OSI وTCP/IP."
+  },
+  "estimatedMinutes": 90,
+  "finalQuizId": "quiz-c01-final",
+  "lessonIds": [
+    "lesson-01-01",
+    "lesson-01-02"
+  ],
+  "status": "approved",
+  "contentVersion": "v003"
+}

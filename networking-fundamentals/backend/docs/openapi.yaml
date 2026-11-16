@@ -1,0 +1,341 @@
+openapi: 3.0.3
+info:
+  title: Networking Fundamentals Backend API
+  version: 1.0.0
+  description: |
+    Contract for the trusted TypeScript backend (Firebase Functions) of the
+    Networking Fundamentals learning MVP.
+
+    Every response uses one of two envelopes:
+
+    * success: {"success": true, "data": <payload>}
+    * failure: {"success": false, "error": {"code": <code>, "message": <message>}}
+
+    Versioning decision (N1-11): the MVP contract is version 1 and the
+    envelope deliberately contains no `schemaVersion` field. Adding one, or
+    adding correlation IDs to public bodies, is a breaking contract change
+    that must be agreed and regression-tested before adoption.
+
+    All endpoints are GET-only and send `Cache-Control: no-store`.
+servers:
+  - url: http://127.0.0.1:5001/demo-networking-p1/us-central1
+    description: Local Firebase Functions emulator (host machine)
+  - url: http://LAPTOP_LAN_IP:5001/demo-networking-p1/us-central1
+    description: Same emulator reached from the Android device over the LAN (N7)
+tags:
+  - name: System
+    description: Public operational endpoints
+  - name: Auth
+    description: Firebase ID token identity
+  - name: Authorization
+    description: Role-gated demonstration endpoints
+paths:
+  /health:
+    get:
+      tags: [System]
+      summary: Public health check
+      operationId: getHealth
+      security: []
+      responses:
+        "200":
+          description: Service is running
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum: [no-store]
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                success: true
+                data:
+                  status: ok
+                  service: networking-backend
+        "405":
+          $ref: "#/components/responses/MethodNotAllowed"
+  /me:
+    get:
+      tags: [Auth]
+      summary: Returns the verified caller UID
+      operationId: getMe
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Verified identity
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum: [no-store]
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+              example:
+                success: true
+                data:
+                  uid: verified-uid-example
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "405":
+          $ref: "#/components/responses/MethodNotAllowed"
+  /studentAccess:
+    get:
+      tags: [Authorization]
+      summary: Requires a verified current Student role
+      operationId: getStudentAccess
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Caller is a current Student
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum: [no-store]
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentAccessResponse"
+              example:
+                success: true
+                data:
+                  uid: verified-uid-example
+                  role: student
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "405":
+          $ref: "#/components/responses/MethodNotAllowed"
+        "503":
+          $ref: "#/components/responses/AuthServiceUnavailable"
+  /adminAccess:
+    get:
+      tags: [Authorization]
+      summary: Requires a verified current Admin role
+      operationId: getAdminAccess
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Caller is a current Admin
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum: [no-store]
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccessResponse"
+              example:
+                success: true
+                data:
+                  uid: verified-uid-example
+                  role: admin
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "405":
+          $ref: "#/components/responses/MethodNotAllowed"
+        "503":
+          $ref: "#/components/responses/AuthServiceUnavailable"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Firebase ID token
+      description: |
+        Verified Firebase ID token. The client must send exactly
+        `Authorization: Bearer <idToken>` and must never send a UID or role
+        in the query string or in custom headers.
+  schemas:
+    ApiErrorCode:
+      type: string
+      description: Stable public error identifier.
+      enum:
+        - UNAUTHENTICATED
+        - INVALID_TOKEN
+        - FORBIDDEN
+        - METHOD_NOT_ALLOWED
+        - AUTH_SERVICE_UNAVAILABLE
+    ApiFailure:
+      type: object
+      required: [success, error]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: object
+          required: [code, message]
+          additionalProperties: false
+          properties:
+            code:
+              $ref: "#/components/schemas/ApiErrorCode"
+            message:
+              type: string
+    HealthResponse:
+      type: object
+      required: [success, data]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [status, service]
+          additionalProperties: false
+          properties:
+            status:
+              type: string
+              enum: [ok]
+            service:
+              type: string
+              enum: [networking-backend]
+    MeResponse:
+      type: object
+      required: [success, data]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [uid]
+          additionalProperties: false
+          properties:
+            uid:
+              type: string
+              description: UID from the verified token, never from the request.
+    StudentAccessResponse:
+      type: object
+      required: [success, data]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [uid, role]
+          additionalProperties: false
+          properties:
+            uid:
+              type: string
+            role:
+              type: string
+              enum: [student]
+    AdminAccessResponse:
+      type: object
+      required: [success, data]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [uid, role]
+          additionalProperties: false
+          properties:
+            uid:
+              type: string
+            role:
+              type: string
+              enum: [admin]
+  responses:
+    Unauthorized:
+      description: |
+        Missing, malformed, invalid, expired, or revoked credentials.
+        `UNAUTHENTICATED` means no usable Bearer token was supplied;
+        `INVALID_TOKEN` means the token was supplied but rejected.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          examples:
+            missingToken:
+              value:
+                success: false
+                error:
+                  code: UNAUTHENTICATED
+                  message: A valid Bearer token is required.
+            invalidToken:
+              value:
+                success: false
+                error:
+                  code: INVALID_TOKEN
+                  message: The authentication token is invalid.
+    Forbidden:
+      description: |
+        The caller is authenticated but is not a current holder of the
+        required role, the live role differs from the token role, the account
+        is disabled, or the account no longer exists.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          example:
+            success: false
+            error:
+              code: FORBIDDEN
+              message: You do not have permission to access this resource.
+    MethodNotAllowed:
+      description: The endpoint only accepts GET.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+        Allow:
+          schema:
+            type: string
+            enum: [GET]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          example:
+            success: false
+            error:
+              code: METHOD_NOT_ALLOWED
+              message: Only GET requests are supported.
+    AuthServiceUnavailable:
+      description: |
+        The authorization service could not be queried. This is an
+        availability failure, not a permission decision.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          example:
+            success: false
+            error:
+              code: AUTH_SERVICE_UNAVAILABLE
+              message: Authorization service is temporarily unavailable.

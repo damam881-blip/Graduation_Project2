@@ -1,0 +1,20 @@
+{
+  "courseId": "course-06",
+  "order": 6,
+  "title": {
+    "en": "Network Security Basics",
+    "ar": "أساسيات أمن الشبكات"
+  },
+  "description": {
+    "en": "Common threats, defense in depth, and a structured troubleshooting methodology.",
+    "ar": "التهديدات الشائعة، والدفاع متعدد الطبقات، ومنهجية منظمة لاستكشاف الأخطاء."
+  },
+  "estimatedMinutes": 120,
+  "finalQuizId": "quiz-c06-final",
+  "lessonIds": [
+    "lesson-06-01",
+    "lesson-06-02"
+  ],
+  "status": "approved",
+  "contentVersion": "v003"
+}

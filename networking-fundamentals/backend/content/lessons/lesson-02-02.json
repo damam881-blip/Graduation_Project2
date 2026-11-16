@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-02-02",
+  "courseId": "course-02",
+  "order": 2,
+  "title": {
+    "en": "Public and Private Addressing",
+    "ar": "العنونة العامة والخاصة"
+  },
+  "summary": {
+    "en": "RFC 1918 ranges and how NAT translates them.",
+    "ar": "نطاقات RFC 1918 وكيف يترجمها NAT."
+  },
+  "estimatedMinutes": 20,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "Private IPv4 ranges are `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. They are reused inside local networks and are not routed on the internet.",
+        "ar": "نطاقات IPv4 الخاصة هي `10.0.0.0/8` و`172.16.0.0/12` و`192.168.0.0/16`. يعاد استخدامها داخل الشبكات المحلية ولا يتم توجيهها على الإنترنت."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "A home router gives a laptop `192.168.1.50` and translates it to one public address with **NAT**.",
+        "ar": "يمنح موجه المنزل الحاسوب المحمول العنوان `192.168.1.50` ويترجمه إلى عنوان عام واحد باستخدام **NAT**."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "Public addresses must be globally unique. Private addresses save public space and add a small boundary between the local network and the internet.",
+        "ar": "يجب أن تكون العناوين العامة فريدة عالميا. توفر العناوين الخاصة مساحة العناوين العامة وتضيف حدّا بسيطا بين الشبكة المحلية والإنترنت."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which range is a private IPv4 range?",
+      "ar": "أي نطاق يعد نطاق IPv4 خاصا؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "192.168.0.0/16",
+          "ar": "192.168.0.0/16"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "8.8.8.0/24",
+          "ar": "8.8.8.0/24"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "203.0.113.0/24",
+          "ar": "203.0.113.0/24"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c02-l02",
+  "status": "approved",
+  "contentVersion": "v003"
+}

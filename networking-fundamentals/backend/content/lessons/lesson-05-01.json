@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-05-01",
+  "courseId": "course-05",
+  "order": 1,
+  "title": {
+    "en": "DNS and DHCP",
+    "ar": "DNS وDHCP"
+  },
+  "summary": {
+    "en": "Name resolution and automatic address assignment.",
+    "ar": "ترجمة الأسماء والتخصيص التلقائي للعناوين."
+  },
+  "estimatedMinutes": 20,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "**DNS** resolves names such as `example.com` to IP addresses. **DHCP** assigns an address, mask, gateway, and DNS server to a device automatically.",
+        "ar": "تترجم **DNS** الأسماء مثل `example.com` إلى عناوين IP. يمنح **DHCP** الجهاز عنوانا وقناعا وبوابة وخادم DNS تلقائيا."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "A laptop joins Wi-Fi and receives `192.168.1.50/24` plus DNS `192.168.1.1` from DHCP; the browser then asks DNS for the site address.",
+        "ar": "ينضم الحاسوب إلى Wi-Fi ويستلم `192.168.1.50/24` وخادم DNS `192.168.1.1` من DHCP؛ ثم يسأل المتصفح خدمة DNS عن عنوان الموقع."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "DHCP uses the **DORA** exchange: Discover, Offer, Request, Acknowledge. Without DNS, users would have to remember numeric addresses.",
+        "ar": "يستخدم DHCP تبادل **DORA**: اكتشاف، عرض، طلب، تأكيد. بدون DNS سيضطر المستخدمون إلى تذكر العناوين الرقمية."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which service assigns IP addresses automatically?",
+      "ar": "أي خدمة تمنح عناوين IP تلقائيا؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "DHCP",
+          "ar": "DHCP"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "DNS",
+          "ar": "DNS"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "NAT",
+          "ar": "NAT"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c05-l01",
+  "status": "approved",
+  "contentVersion": "v003"
+}

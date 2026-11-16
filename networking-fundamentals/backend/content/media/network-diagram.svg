@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="Two computers connected through a switch">
+  <rect width="640" height="360" fill="#f7f9fc"/>
+  <rect x="60" y="140" width="150" height="80" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="135" y="188" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#1e3a8a">PC A</text>
+  <rect x="245" y="150" width="150" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="320" y="187" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#166534">Switch</text>
+  <rect x="430" y="140" width="150" height="80" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="505" y="188" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#1e3a8a">PC B</text>
+  <line x1="210" y1="180" x2="245" y2="180" stroke="#334155" stroke-width="4"/>
+  <line x1="395" y1="180" x2="430" y2="180" stroke="#334155" stroke-width="4"/>
+  <text x="320" y="320" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#475569">Nodes and links in a local network</text>
+</svg>

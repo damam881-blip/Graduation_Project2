@@ -1,0 +1,20 @@
+{
+  "courseId": "course-04",
+  "order": 4,
+  "title": {
+    "en": "Routing and Switching",
+    "ar": "التوجيه والتبديل"
+  },
+  "description": {
+    "en": "Switching fundamentals, static and dynamic routing, and how packets move between networks.",
+    "ar": "أساسيات التبديل، والتوجيه الثابت والديناميكي، وكيف تنتقل الحزم بين الشبكات."
+  },
+  "estimatedMinutes": 120,
+  "finalQuizId": "quiz-c04-final",
+  "lessonIds": [
+    "lesson-04-01",
+    "lesson-04-02"
+  ],
+  "status": "approved",
+  "contentVersion": "v003"
+}

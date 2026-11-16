@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-04-01",
+  "courseId": "course-04",
+  "order": 1,
+  "title": {
+    "en": "Switching Fundamentals",
+    "ar": "أساسيات التبديل"
+  },
+  "summary": {
+    "en": "MAC addresses, frames, and switch forwarding.",
+    "ar": "عناوين MAC والإطارات وإعادة توجيه المحول."
+  },
+  "estimatedMinutes": 25,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "A switch forwards **frames** inside a LAN using **MAC addresses**. It learns which MAC address is reachable on which port.",
+        "ar": "يعيد المحول توجيه **الإطارات** داخل الشبكة المحلية باستخدام **عناوين MAC**. يتعلم عنوان MAC الذي يمكن الوصول إليه عبر كل منفذ."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "If the destination MAC is unknown, the switch floods the frame out of all ports except the one it arrived on. The reply teaches it the location.",
+        "ar": "إذا كان عنوان MAC الوجهة غير معروف، يبث المحول الإطار عبر جميع المنافذ باستثناء المنفذ الذي وصل منه. ويعلّمه الرد موقعه."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "**VLANs** split one physical switch into isolated broadcast domains, which improves both performance and security.",
+        "ar": "تقسم **VLANs** المحول الفيزيائي الواحد إلى نطاقات بث معزولة، مما يحسن الأداء والأمان معا."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "What does a switch use to forward frames?",
+      "ar": "ماذا يستخدم المحول لإعادة توجيه الإطارات؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "MAC addresses",
+          "ar": "عناوين MAC"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "IP addresses only",
+          "ar": "عناوين IP فقط"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "TCP port numbers",
+          "ar": "أرقام منافذ TCP"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c04-l01",
+  "status": "approved",
+  "contentVersion": "v003"
+}

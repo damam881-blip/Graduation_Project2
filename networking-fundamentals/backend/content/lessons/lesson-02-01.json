@@ -1,0 +1,83 @@
+{
+  "lessonId": "lesson-02-01",
+  "courseId": "course-02",
+  "order": 1,
+  "title": {
+    "en": "IPv4 Addresses",
+    "ar": "عناوين IPv4"
+  },
+  "summary": {
+    "en": "Dotted-decimal notation, octets, and address classes.",
+    "ar": "التدوين العشري المنقط، والثمانيات، وفئات العناوين."
+  },
+  "estimatedMinutes": 20,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "An IPv4 address is **32 bits** long, written as four decimal *octets* separated by dots, for example `192.168.1.50`. Each octet ranges from 0 to 255.",
+        "ar": "يبلغ طول عنوان IPv4 **32 بت**، ويكتب على شكل أربع *ثمانيات* عشرية تفصل بينها نقاط، مثل `192.168.1.50`. تتراوح كل ثمانية بين 0 و255."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "image",
+      "asset": "media/ipv4-octets.svg",
+      "alt": {
+        "en": "An IPv4 address split into four octets",
+        "ar": "عنوان IPv4 مقسم إلى أربع ثمانيات"
+      },
+      "caption": {
+        "en": "32 bits grouped into four octets",
+        "ar": "32 بت مقسمة إلى أربع ثمانيات"
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "An address has a **network** part and a **host** part. The subnet mask decides where that boundary falls.",
+        "ar": "يتكون العنوان من جزء **للشبكة** وجزء **للمضيف**. يحدد قناع الشبكة الفرعية موضع هذا الحد."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "How many bits are in an IPv4 address?",
+      "ar": "كم عدد بتات عنوان IPv4؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "32",
+          "ar": "32"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "64",
+          "ar": "64"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "128",
+          "ar": "128"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c02-l01",
+  "status": "approved",
+  "contentVersion": "v003"
+}

@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-03-02",
+  "courseId": "course-03",
+  "order": 2,
+  "title": {
+    "en": "VLSM Basics",
+    "ar": "أساسيات VLSM"
+  },
+  "summary": {
+    "en": "Sizing subnets to real host requirements.",
+    "ar": "تحديد أحجام الشبكات الفرعية حسب احتياجات المضيفين الفعلية."
+  },
+  "estimatedMinutes": 25,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "**VLSM** lets each subnet use a different mask size. Instead of giving every segment the same large block, you size each one for its real host count.",
+        "ar": "تسمح **VLSM** لكل شبكة فرعية باستخدام حجم قناع مختلف. فبدلا من منح كل مقطع الكتلة الكبيرة نفسها، تحدد حجم كل مقطع حسب عدد المضيفين الفعلي."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "A segment with 50 hosts needs a `/26` (62 usable addresses), while a segment with 10 hosts can use a `/28` (14 usable addresses).",
+        "ar": "يحتاج مقطع به 50 مضيفا إلى `/26` (62 عنوانا قابلا للاستخدام)، بينما يمكن لمقطع به 10 مضيفات استخدام `/28` (14 عنوانا قابلا للاستخدام)."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "Allocate the largest subnets first, keep them aligned, and document the plan so routes and firewall rules stay predictable.",
+        "ar": "خصص الشبكات الفرعية الأكبر أولا، وحافظ على محاذاتها، ووثق الخطة لتبقى المسارات وقواعد الجدار الناري متوقعة."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Why is VLSM used?",
+      "ar": "لماذا تستخدم VLSM؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "To size each subnet for its host requirement.",
+          "ar": "لتحديد حجم كل شبكة فرعية حسب احتياجها من المضيفين."
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "To give every subnet the same mask.",
+          "ar": "لمنح كل شبكة فرعية القناع نفسه."
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "To remove the need for routing.",
+          "ar": "لإلغاء الحاجة إلى التوجيه."
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c03-l02",
+  "status": "approved",
+  "contentVersion": "v003"
+}

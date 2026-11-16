@@ -1,0 +1,140 @@
+rules_version = '2';
+
+// N2-04 least-privilege rules.
+// Normative inputs:
+//   backend/docs/schema-lock.md §5 (field ownership)
+//   backend/docs/data-model.md §11 (trust matrix), §14 (D-01…D-08)
+//   backend/docs/fixtures-n2.md (fixture matrix)
+//
+// The Functions backend uses the Admin SDK, which bypasses these rules.
+// Nothing here grants a client write except the two owner profile fields.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Active published content version. A missing pointer makes get() fail,
+    // which denies every content read (fail-closed).
+    function activeVersion() {
+      return get(/databases/$(database)/documents/system/publishedContentVersion)
+        .data.contentVersion;
+    }
+
+    // course-01 is free. Later courses need an own courseProgress document
+    // whose status is not "locked". A missing document denies.
+    function courseUnlocked(courseId) {
+      return courseId == "course-01" ||
+        (signedIn() &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)/courseProgress/$(courseId))
+            .data.status != "locked");
+    }
+
+    // ---- Content: public pointer and active version only -------------------
+
+    match /system/publishedContentVersion {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /contentVersions/{versionId} {
+      allow read: if versionId == activeVersion();
+      allow write: if false;
+    }
+
+    // Catalog metadata is public for the active version, including locked
+    // courses, so guests can see what is available.
+    match /contentVersions/{versionId}/courses/{courseId} {
+      allow read: if versionId == activeVersion();
+      allow write: if false;
+    }
+
+    match /contentVersions/{versionId}/courses/{courseId}/lessons/{lessonId} {
+      allow read: if versionId == activeVersion() && courseUnlocked(courseId);
+      allow write: if false;
+    }
+
+    // The checkpoint answer and explanation never leave the server.
+    match /contentVersions/{versionId}/courses/{courseId}/lessons/{lessonId}/private/{document=**} {
+      allow read, write: if false;
+    }
+
+    // Quiz metadata is readable with the same unlock gate as its lesson.
+    // The course is read from the document because the path has no course ID.
+    match /contentVersions/{versionId}/quizzes/{quizId} {
+      allow read: if versionId == activeVersion() &&
+        courseUnlocked(resource.data.courseId);
+      allow write: if false;
+    }
+
+    // Question banks, answer keys, and AI source are server-only.
+    match /contentVersions/{versionId}/quizBanks/{document=**} {
+      allow read, write: if false;
+    }
+
+    match /contentVersions/{versionId}/aiSections/{sectionId} {
+      allow read, write: if false;
+    }
+
+    // ---- User profile: owner read, two-field owner update ------------------
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create, delete: if false;
+
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && resource.data.status == "active"
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["displayName", "preferredLanguage"])
+        && (!("displayName" in request.resource.data) ||
+          (request.resource.data.displayName is string &&
+            request.resource.data.displayName.size() <= 80))
+        && (request.resource.data.preferredLanguage == "en" ||
+          request.resource.data.preferredLanguage == "ar");
+    }
+
+    // ---- User progress: owner read only, server writes ---------------------
+
+    match /users/{uid}/courseProgress/{courseId} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /users/{uid}/lessonProgress/{lessonId} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ---- Server-only user state (D-01) -------------------------------------
+
+    match /users/{uid}/attempts/{attemptId} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid}/quizState/{quizId} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid}/idempotency/{keyHash} {
+      allow read, write: if false;
+    }
+
+    // ---- Server-only global collections ------------------------------------
+
+    match /accountTombstones/{uid} {
+      allow read, write: if false;
+    }
+
+    match /adminAudit/{eventId} {
+      allow read, write: if false;
+    }
+
+    // Default deny for anything not matched above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

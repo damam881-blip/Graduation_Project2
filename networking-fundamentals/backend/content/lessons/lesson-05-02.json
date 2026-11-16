@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-05-02",
+  "courseId": "course-05",
+  "order": 2,
+  "title": {
+    "en": "HTTP and Email Services",
+    "ar": "خدمات HTTP والبريد"
+  },
+  "summary": {
+    "en": "Web requests, responses, and mail delivery paths.",
+    "ar": "طلبات الويب واستجاباته ومسارات تسليم البريد."
+  },
+  "estimatedMinutes": 20,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "**HTTP** carries web requests and responses over TCP. A status code such as `200` means success and `404` means the resource was not found.",
+        "ar": "ينقل **HTTP** طلبات الويب واستجاباته عبر TCP. يعني رمز الحالة `200` النجاح، و`404` أن المورد غير موجود."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "A browser sends `GET /lesson` to a server; the server replies with `200 OK` and the page body, or `404` if the path is wrong.",
+        "ar": "يرسل المتصفح `GET /lesson` إلى الخادم؛ فيرد الخادم بـ `200 OK` ومحتوى الصفحة، أو `404` إذا كان المسار خاطئا."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "Email uses **SMTP** to send and **IMAP** or **POP3** to retrieve. Web and mail traffic should use TLS so credentials and content stay private.",
+        "ar": "يستخدم البريد **SMTP** للإرسال و**IMAP** أو **POP3** للاسترجاع. ينبغي أن يستخدم الويب والبريد TLS لتبقى بيانات الاعتماد والمحتوى خاصة."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which protocol is used to send email?",
+      "ar": "أي بروتوكول يستخدم لإرسال البريد الإلكتروني؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "SMTP",
+          "ar": "SMTP"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "IMAP",
+          "ar": "IMAP"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "HTTP",
+          "ar": "HTTP"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c05-l02",
+  "status": "approved",
+  "contentVersion": "v003"
+}

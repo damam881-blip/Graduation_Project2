@@ -1,0 +1,20 @@
+{
+  "courseId": "course-03",
+  "order": 3,
+  "title": {
+    "en": "Subnetting and VLSM",
+    "ar": "التقسيم الفرعي للشبكات وVLSM"
+  },
+  "description": {
+    "en": "Subnet masks, CIDR, subnet calculations, and variable-length subnet masking.",
+    "ar": "أقنعة الشبكة الفرعية، وCIDR، وحسابات التقسيم الفرعي، وتقسيم الشبكات متغير الطول."
+  },
+  "estimatedMinutes": 120,
+  "finalQuizId": "quiz-c03-final",
+  "lessonIds": [
+    "lesson-03-01",
+    "lesson-03-02"
+  ],
+  "status": "approved",
+  "contentVersion": "v003"
+}

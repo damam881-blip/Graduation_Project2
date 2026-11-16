@@ -1,0 +1,20 @@
+{
+  "courseId": "course-05",
+  "order": 5,
+  "title": {
+    "en": "Network Services",
+    "ar": "خدمات الشبكة"
+  },
+  "description": {
+    "en": "DNS, DHCP, HTTP, and email services that applications depend on.",
+    "ar": "خدمات DNS وDHCP وHTTP والبريد الإلكتروني التي تعتمد عليها التطبيقات."
+  },
+  "estimatedMinutes": 90,
+  "finalQuizId": "quiz-c05-final",
+  "lessonIds": [
+    "lesson-05-01",
+    "lesson-05-02"
+  ],
+  "status": "approved",
+  "contentVersion": "v003"
+}

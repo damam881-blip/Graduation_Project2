@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-06-01",
+  "courseId": "course-06",
+  "order": 1,
+  "title": {
+    "en": "Security Threats and Defenses",
+    "ar": "التهديدات الأمنية والدفاعات"
+  },
+  "summary": {
+    "en": "Malware, phishing, and layered defenses.",
+    "ar": "البرمجيات الخبيثة والتصيد والدفاعات متعددة الطبقات."
+  },
+  "estimatedMinutes": 25,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "Common threats include **malware**, **phishing**, and weak or reused credentials. Security aims to protect confidentiality, integrity, and availability.",
+        "ar": "تشمل التهديدات الشائعة **البرمجيات الخبيثة** و**التصيد** وبيانات الاعتماد الضعيفة أو المعاد استخدامها. يهدف الأمن إلى حماية السرية والسلامة والتوافر."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "A phishing email may use a lookalike domain and urgent language. Verify the sender, hover over links, and never enter credentials from an unexpected message.",
+        "ar": "قد يستخدم بريد التصيد نطاقا مشابها ولغة تستعجل المستخدم. تحقق من المرسل، ومرر المؤشر فوق الروابط، ولا تدخل بيانات الاعتماد من رسالة غير متوقعة."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "**Defense in depth** combines patching, multi-factor authentication, least privilege, segmentation, monitoring, and tested backups so one failure is not enough.",
+        "ar": "يجمع **الدفاع متعدد الطبقات** بين التحديثات والمصادقة متعددة العوامل وأقل صلاحية والتقسيم والمراقبة والنسخ الاحتياطي المختبر، حتى لا يكفي فشل واحد."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which practice is an example of defense in depth?",
+      "ar": "أي ممارسة تعد مثالا على الدفاع متعدد الطبقات؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "Combining patching, MFA, and least privilege",
+          "ar": "الجمع بين التحديثات والمصادقة متعددة العوامل وأقل صلاحية"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "Relying on one firewall only",
+          "ar": "الاعتماد على جدار ناري واحد فقط"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "Disabling security updates",
+          "ar": "تعطيل تحديثات الأمان"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c06-l01",
+  "status": "approved",
+  "contentVersion": "v003"
+}

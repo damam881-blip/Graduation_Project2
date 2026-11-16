@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Firebase Logs
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Environment variables (Keep secrets safe!)
+.env
+.env.local
+.env.*.local
+
+# VS Code (optional, but recommended)
+.vscode/

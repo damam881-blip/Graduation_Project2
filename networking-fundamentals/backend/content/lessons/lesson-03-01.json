@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-03-01",
+  "courseId": "course-03",
+  "order": 1,
+  "title": {
+    "en": "Subnet Masks",
+    "ar": "أقنعة الشبكة الفرعية"
+  },
+  "summary": {
+    "en": "Network, host, and broadcast parts of an address.",
+    "ar": "أجزاء الشبكة والمضيف والبث في العنوان."
+  },
+  "estimatedMinutes": 25,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "A subnet mask marks the **network bits** with 1s and the **host bits** with 0s. `/24` means 24 network bits, written as `255.255.255.0`.",
+        "ar": "يحدد قناع الشبكة الفرعية **بتات الشبكة** بالرقم 1 و**بتات المضيف** بالرقم 0. يعني `/24` وجود 24 بت شبكة، ويكتب `255.255.255.0`."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "For `192.168.1.50/24`, the network address is `192.168.1.0` and the broadcast address is `192.168.1.255`.",
+        "ar": "بالنسبة إلى `192.168.1.50/24`، عنوان الشبكة هو `192.168.1.0` وعنوان البث هو `192.168.1.255`."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "The device finds the network by applying a bitwise **AND** between the address and the mask. Hosts in the same subnet share that result.",
+        "ar": "يجد الجهاز الشبكة بتطبيق عملية **AND** على مستوى البت بين العنوان والقناع. تشترك المضيفات في الشبكة الفرعية نفسها في الناتج."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "What is the network address of 192.168.1.50/24?",
+      "ar": "ما هو عنوان الشبكة للعنوان 192.168.1.50/24؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "192.168.1.0",
+          "ar": "192.168.1.0"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "192.168.1.50",
+          "ar": "192.168.1.50"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "192.168.1.255",
+          "ar": "192.168.1.255"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c03-l01",
+  "status": "approved",
+  "contentVersion": "v003"
+}

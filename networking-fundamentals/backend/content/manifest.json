@@ -1,0 +1,36 @@
+{
+  "contentVersion": "v003",
+  "formatVersion": 1,
+  "defaultLanguage": "en",
+  "languages": [
+    "en",
+    "ar"
+  ],
+  "courses": [
+    "courses/course-01.json",
+    "courses/course-02.json",
+    "courses/course-03.json",
+    "courses/course-04.json",
+    "courses/course-05.json",
+    "courses/course-06.json"
+  ],
+  "lessons": [
+    "lessons/lesson-01-01.json",
+    "lessons/lesson-01-02.json",
+    "lessons/lesson-02-01.json",
+    "lessons/lesson-02-02.json",
+    "lessons/lesson-03-01.json",
+    "lessons/lesson-03-02.json",
+    "lessons/lesson-04-01.json",
+    "lessons/lesson-04-02.json",
+    "lessons/lesson-05-01.json",
+    "lessons/lesson-05-02.json",
+    "lessons/lesson-06-01.json",
+    "lessons/lesson-06-02.json"
+  ],
+  "media": [
+    "media/network-diagram.svg",
+    "media/ipv4-octets.svg"
+  ],
+  "note": "Public approved content only. Assessment answers and keys are not stored here."
+}

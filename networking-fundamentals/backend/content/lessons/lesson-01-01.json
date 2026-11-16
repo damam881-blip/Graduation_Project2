@@ -1,0 +1,83 @@
+{
+  "lessonId": "lesson-01-01",
+  "courseId": "course-01",
+  "order": 1,
+  "title": {
+    "en": "What is a Network?",
+    "ar": "ما هي الشبكة؟"
+  },
+  "summary": {
+    "en": "Nodes, links, and why networks exist.",
+    "ar": "العقد والروابط ولماذا توجد الشبكات."
+  },
+  "estimatedMinutes": 15,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "A **network** connects devices so they can exchange data and share resources. Each device is a *node*, and each connection between nodes is a *link*.",
+        "ar": "تربط **الشبكة** الأجهزة لتبادل البيانات ومشاركة الموارد. كل جهاز هو *عقدة*، وكل اتصال بين العقد هو *رابط*."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "image",
+      "asset": "media/network-diagram.svg",
+      "alt": {
+        "en": "Two computers connected through a central switch",
+        "ar": "حاسوبان متصلان عبر مبدل مركزي"
+      },
+      "caption": {
+        "en": "Two nodes connected by a switch",
+        "ar": "عقدتان متصلتان عبر مبدل"
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "A **LAN** covers a small area such as a room or building. A **WAN** spans cities or countries and usually relies on a service provider.",
+        "ar": "تغطي **الشبكة المحلية** مساحة صغيرة كغرفة أو مبنى. تمتد **الشبكة الواسعة** بين المدن أو الدول وتعتمد عادة على مزود خدمة."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which statement best describes a LAN?",
+      "ar": "أي عبارة تصف الشبكة المحلية بشكل أفضل؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "It covers a small area such as a room or building.",
+          "ar": "تغطي مساحة صغيرة كغرفة أو مبنى."
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "It always spans multiple countries.",
+          "ar": "تمتد دائما بين عدة دول."
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "It only works without any physical link.",
+          "ar": "تعمل فقط دون أي رابط فيزيائي."
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c01-l01",
+  "status": "approved",
+  "contentVersion": "v003"
+}

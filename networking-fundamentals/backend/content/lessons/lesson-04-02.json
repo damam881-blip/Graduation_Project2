@@ -1,0 +1,78 @@
+{
+  "lessonId": "lesson-04-02",
+  "courseId": "course-04",
+  "order": 2,
+  "title": {
+    "en": "Static and Dynamic Routing",
+    "ar": "التوجيه الثابت والديناميكي"
+  },
+  "summary": {
+    "en": "Routing tables, next hops, and routing protocols.",
+    "ar": "جداول التوجيه والقفزات التالية وبروتوكولات التوجيه."
+  },
+  "estimatedMinutes": 25,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "A router forwards **packets** between networks using a **routing table**. Each entry maps a destination prefix to a next hop or interface.",
+        "ar": "يعيد الموجه توجيه **الحزم** بين الشبكات باستخدام **جدول توجيه**. يربط كل إدخال بادئة وجهة بقفزة تالية أو واجهة."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "example",
+      "text": {
+        "en": "The default route `0.0.0.0/0` matches any destination when no more specific route exists, and usually points to the internet gateway.",
+        "ar": "يطابق المسار الافتراضي `0.0.0.0/0` أي وجهة عند عدم وجود مسار أكثر تحديدا، ويشير عادة إلى بوابة الإنترنت."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "**Static** routes are configured by hand. **Dynamic** protocols such as OSPF learn routes automatically. Routers choose the **longest matching prefix**.",
+        "ar": "تُعد مسارات **التوجيه الثابت** يدويا. تتعلم البروتوكولات **الديناميكية** مثل OSPF المسارات تلقائيا. تختار الموجهات **أطول بادئة مطابقة**."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which route wins when several prefixes match?",
+      "ar": "أي مسار يفوز عند تطابق عدة بادئات؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "The longest matching prefix",
+          "ar": "أطول بادئة مطابقة"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "The shortest matching prefix",
+          "ar": "أقصر بادئة مطابقة"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "A random route",
+          "ar": "مسار عشوائي"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c04-l02",
+  "status": "approved",
+  "contentVersion": "v003"
+}

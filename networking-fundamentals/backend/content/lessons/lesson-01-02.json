@@ -1,0 +1,85 @@
+{
+  "lessonId": "lesson-01-02",
+  "courseId": "course-01",
+  "order": 2,
+  "title": {
+    "en": "Network Topologies",
+    "ar": "طوبولوجيا الشبكات"
+  },
+  "summary": {
+    "en": "Star, bus, ring, and mesh layouts.",
+    "ar": "تصميمات النجمة والناقل والحلقة والشبكة المتداخلة."
+  },
+  "estimatedMinutes": 15,
+  "sections": [
+    {
+      "order": 1,
+      "sectionId": "sec-01",
+      "type": "text",
+      "text": {
+        "en": "In a **star** topology every device connects to a central switch. It is easy to manage, but the central device is a single point of failure.",
+        "ar": "في طوبولوجيا **النجمة** يتصل كل جهاز بمبدل مركزي. يسهل إدارتها، لكن الجهاز المركزي يمثل نقطة فشل واحدة."
+      }
+    },
+    {
+      "order": 2,
+      "sectionId": "sec-02",
+      "type": "video",
+      "provider": "youtube",
+      "videoId": "00000000000",
+      "unlisted": true,
+      "caption": {
+        "en": "Short video: comparing network topologies",
+        "ar": "فيديو قصير: مقارنة طوبولوجيات الشبكات"
+      },
+      "fallback": {
+        "en": "Video currently unavailable. Read the diagram and text instead.",
+        "ar": "الفيديو غير متاح حاليا. استخدم الرسم والنص بدلا منه."
+      }
+    },
+    {
+      "order": 3,
+      "sectionId": "sec-03",
+      "type": "text",
+      "text": {
+        "en": "A **mesh** topology offers redundant paths, so one failed link does not isolate a device. A **bus** shares one backbone and is rarely used in new designs.",
+        "ar": "توفر طوبولوجيا **الشبكة المتداخلة** مسارات احتياطية، فلا يؤدي فشل رابط واحد إلى عزل جهاز. تشترك طوبولوجيا **الناقل** في خط رئيسي واحد ونادرا ما تستخدم في التصاميم الجديدة."
+      }
+    }
+  ],
+  "checkpoint": {
+    "checkpointId": "cp-01",
+    "afterSectionId": "sec-02",
+    "question": {
+      "en": "Which topology connects every device to a central switch?",
+      "ar": "أي طوبولوجيا تربط كل جهاز بمبدل مركزي؟"
+    },
+    "options": [
+      {
+        "optionId": "a",
+        "text": {
+          "en": "Star",
+          "ar": "النجمة"
+        }
+      },
+      {
+        "optionId": "b",
+        "text": {
+          "en": "Bus",
+          "ar": "الناقل"
+        }
+      },
+      {
+        "optionId": "c",
+        "text": {
+          "en": "Mesh",
+          "ar": "المتداخلة"
+        }
+      }
+    ],
+    "maxRetries": null
+  },
+  "quizId": "quiz-c01-l02",
+  "status": "approved",
+  "contentVersion": "v003"
+}
