@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "content:import:test": "node --test ./tests/content-import.n3.test.mjs"
   },
   "keywords": [],
   "author": "",

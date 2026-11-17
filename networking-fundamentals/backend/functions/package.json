@@ -13,7 +13,13 @@
     "fixtures:verify": "node scripts/verify-fixtures.cjs",
     "fixtures:test": "node --test tests/fixtures.test.cjs",
     "catalog:test": "node --test tests/catalog.test.cjs",
-    "content:test": "node --test ../tests/content.n3.test.mjs"
+    "content:test": "node --test ../tests/content.n3.test.mjs",
+    "content:import:validate": "node scripts/import-content.cjs validate",
+    "content:import:stage": "node scripts/import-content.cjs stage",
+    "content:import:preview": "node scripts/import-content.cjs preview",
+    "content:import:publish": "node scripts/import-content.cjs publish",
+    "content:import:rollback": "node scripts/import-content.cjs rollback",
+    "content:assets:serve": "node scripts/serve-assets.cjs"
   },
   "engines": {
     "node": "24"

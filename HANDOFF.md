@@ -1,10 +1,10 @@
 # HANDOFF.md
 
 **Project:** Networking Fundamentals Learning Mobile Application - graduation MVP
-**Handoff date:** 2026-11-18 (Revision 10)
-**Revision:** 10 - Step 5 (N3): N3-06 Flutter content read (catalog + course detail + lesson reader) is complete and verified on a physical device; N3-04 is next.
-**Last completed task:** N3-06 - Flutter reads the published content version end to end - VERIFIED on a physical device, including Arabic/RTL and offline reads
-**Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03, N3-06 done; N3-04 next)
+**Handoff date:** 2026-11-18 (Revision 11)
+**Revision:** 11 - Step 5 (N3): N3-04 validated importer/publish/rollback is complete and verified; N3-05 is next.
+**Last completed task:** N3-04 - validated JSON/CSV import, staging/preview, atomic publish and rollback - VERIFIED in the emulator and on a physical device
+**Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03, N3-04, N3-06 done; N3-05 next)
 
 ---
 
@@ -41,9 +41,13 @@
     - catalog keeps its visual design but shows real titles and Open/Locked from `users/{uid}/courseProgress`; loading, retry and empty states added
     - course detail lists real lessons; lesson reader renders ordered text/image/video sections, checkpoint question/options (answer key stays server-side), Arabic/RTL through the existing `MyApp.changeLanguage`, and a cached offline read
     - known gaps left untouched: `login_screen.dart` is still a mock (no `FirebaseAuth` call), so the signed-in demo uses the previously registered session; the mock `LearningPathScreen` now opens the real catalog; the guest buttons in Welcome and the catalog promo card are still no-ops
-  - N3-04 validated importer/publish/rollback - next
-  - N3-05 AI knowledge exporter - still queued
-- **Confirmed N3 queue (from the N1-N7 roadmap):** N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 validated importer/publish/rollback -> N3-05 AI knowledge exporter -> N3-06 Flutter catalog/lesson reader -> N3-07 content review and first course end-to-end.
+  - N3-04 validated importer/publish/rollback - complete and verified; contract in `content-import-n3.md`:
+    - `functions/scripts/content-import.cjs` validates the public tree + server-only CSV sources before any write (6 courses, 12 lessons, 18 quizzes, 324 questions, 12 checkpoint keys, 391 documents), maps `asset` -> `imageUrl` (verified SVG bytes in `functions/.local/content-assets`) and `videoId` -> `videoUrl`, and writes banks/checkpoint keys only to server-only paths
+    - `import-content.cjs` CLI: `validate`, `stage`, `preview`, `publish`, `rollback`; publish/rollback are single Admin SDK transactions and never rewrite content
+    - `backend/tests/content-import.n3.test.mjs` 14/14 in namespace `demo-networking-contentimport`: missing fields, duplicate IDs, broken references, insufficient bank size, missing private key, client-side answer leak, asset/video mapping, staging invisibility under the real rules, atomic publish, failed publish with unchanged pointer, rollback, failed rollback with unchanged pointer
+    - device verified on `RKGYC042G6T` with CLI-published `v004`: course detail showed `15 min read` (new v004 data, not cached v001 fixtures) and the lesson reader showed the real section text/alt/caption and checkpoint after rebuilding with `FIREBASE_EMULATOR_HOST=192.168.1.4`; CLI rollback restored `v001`, fixtures were reseeded afterwards
+  - N3-05 AI knowledge exporter - next
+- **Confirmed N3 queue (from the N1-N7 roadmap):** N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 validated importer/publish/rollback (done) -> N3-05 AI knowledge exporter -> N3-06 Flutter catalog/lesson reader (done) -> N3-07 content review and first course end-to-end.
 
 ---
 
@@ -324,9 +328,10 @@ cd .. && node --test <six files>  -> tests 43, pass 43, fail 0
 - Rules, index, and lifecycle suite isolation proven (17/17 before and after each).
 
 **PENDING / NOT DONE**
-- **Step 5 (N3) is in progress.** N3-01, N3-02, and N3-03 are complete; N3-04 (validated importer/publish/rollback) is next; N3-05...N3-07 remain.
-- Lesson bodies and media now exist in Git (`backend\content`, `v003`) but are **not yet imported**; fixtures still seed placeholder sections until N3-04.
-- Flutter, AI service, physical device, LAN demo - untouched this phase.
+- **Step 5 (N3) is in progress.** N3-01, N3-02, N3-03, N3-04, and N3-06 are complete; N3-05 (AI knowledge exporter) and N3-07 remain.
+- Lesson bodies and media are imported by N3-04 into `v004` (validated, stage/publish/rollback verified); the reseeded `v001` fixtures still seed placeholder sections for the demo. Publishing `v004` is an explicit CLI action, not automatic on fixture seed.
+- The local asset store serves SVGs over `http://<laptop-ip>:8081`; a deployed environment must supply `CONTENT_ASSET_BASE_URL` pointing to HTTPS Storage.
+- Full regression is 243/244 after a fresh `npm run build`: the protected `functions/tests/api-contract.test.cjs` still asserts the pre-profile-addendum error-code list (missing `METHOD_NOT_SUPPORTED` and `PROFILE_UNAVAILABLE`). Left untouched because it is a protected test; unrelated to N3-04.
 - Rules and indexes are not deployed; deployment is out of MVP scope.
 
 **OPEN ISSUES (accepted/documented)**
@@ -353,7 +358,7 @@ cd .. && node --test <six files>  -> tests 43, pass 43, fail 0
 
 ```powershell
 Get-NetTCPConnection -LocalPort 9099,8080,5001 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalPort
-cd E:\Graduation_Project2\networking-fundamentals\backend\functions
+cd E:\Graduation_Project2_GitHub\networking-fundamentals\backend\functions
 npm run build
 npm run lint
 npm run fixtures:test
@@ -361,14 +366,15 @@ npm run catalog:test
 npm run fixtures:seed
 npm run content:test
 cd ..
-node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\tests\health.http.test.mjs .\tests\firestore.rules.test.mjs .\tests\firestore.rules.n2.test.mjs .\tests\indexes.n2.test.mjs .\tests\lifecycle.n2.test.mjs .\tests\content-read.n3.test.mjs .\tests\content.n3.test.mjs .\functions\tests\api-contract.test.cjs .\functions\tests\authorization.http.test.cjs
+npm run content:import:test
+node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\tests\health.http.test.mjs .\tests\firestore.rules.test.mjs .\tests\firestore.rules.n2.test.mjs .\tests\indexes.n2.test.mjs .\tests\lifecycle.n2.test.mjs .\tests\content-read.n3.test.mjs .\tests\content.n3.test.mjs .\tests\content-import.n3.test.mjs .\functions\tests\api-contract.test.cjs .\functions\tests\authorization.http.test.cjs
 ```
-Expected: build/lint clean, fixtures 19/19, catalog 11/11, content 19/19, **tests 230 / pass 230 / fail 0**. If HTTP tests fail, the emulators are not running.
+Verified 2026-11-18: build/lint clean, catalog 11/11, content 19/19, import 14/14, full regression **244 / pass 243 / fail 1**. Known environment/protected-test failures unrelated to N3-04: `fixtures:test` 17/19 and `fixtures:verify` 16/17 because the demo project now has 19 `users/{uid}` profiles instead of the 4 seeded ones (device registrations from earlier verification); protected `functions/tests/api-contract.test.cjs` still asserts the pre-profile-addendum error-code list. Neither test file was changed. If HTTP tests fail, the emulators are not running.
 
-**Step 1 - Step 5 (N3): continue with N3-04.**
-- Step 4 (N2) is complete; no N2 task remains. N3-01, N3-02, and N3-03 are complete.
-- Confirmed N3 queue: N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 importer/publish/rollback -> N3-05 AI exporter -> N3-06 Flutter reader -> N3-07 content review.
-- N3-04 must validate `backend\content` before writing, upload the SVGs, map `asset` to `imageUrl` and `videoId` to `videoUrl`, write banks/checkpoint keys server-only, and keep publish/rollback transactional.
+**Step 1 - Step 5 (N3): continue with N3-05 (AI knowledge exporter).**
+- Step 4 (N2) is complete; no N2 task remains. N3-01, N3-02, N3-03, N3-04, and N3-06 are complete.
+- Confirmed N3 queue: N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 importer/publish/rollback (done) -> N3-05 AI exporter -> N3-06 Flutter reader (done) -> N3-07 content review.
+- N3-05 must export approved AI sections from the published content into the server-only `aiSections/**` path, with no quiz IDs, answers, or explanations in client-readable documents, and must keep the existing D-09 read path unchanged.
 - Do not reopen N2 items. V-20 (N4/N5), retention/purge automation, TTL, and deployment are still out of N3.
 
 **Verification after every step:**
