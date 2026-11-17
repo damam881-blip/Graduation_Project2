@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
 import '../../content/data/content_repository.dart';
 import '../../content/domain/content_models.dart';
-import 'lesson_reader_screen.dart';
+import 'course_detail_screen.dart';
 
 /// Catalog backed by the approved-content read path (N3-02/D-09).
 ///
@@ -47,6 +48,9 @@ class _CoursesCatalogScreenState extends State<CoursesCatalogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final isArabic = languageCode == 'ar';
+
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A), // خلفية كحلي داكن
       body: SafeArea(
@@ -90,15 +94,19 @@ class _CoursesCatalogScreenState extends State<CoursesCatalogScreen> {
                     ],
                   ),
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () => MyApp.of(context).changeLanguage(
+                      isArabic
+                          ? const Locale('en', 'US')
+                          : const Locale('ar', 'AE'),
+                    ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xFF1E293B)),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
-                    child: const Text('عربي',
-                        style: TextStyle(
+                    child: Text(isArabic ? 'EN' : 'عربي',
+                        style: const TextStyle(
                             color: Color(0xFF0284C7), fontSize: 12)),
                   ),
                 ],
@@ -267,13 +275,14 @@ class _CoursesCatalogScreenState extends State<CoursesCatalogScreen> {
             ),
           ),
           child: InkWell(
-            // الكورس المفتوح يفتح شاشة قراءة الدرس
+            // الكورس المفتوح يفتح قائمة دروسه الحقيقية
             onTap: isOpen
                 ? () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LessonReaderScreen(),
+                        builder: (context) =>
+                            CourseDetailScreen(course: course),
                       ),
                     );
                   }

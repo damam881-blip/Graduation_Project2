@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'course_detail_screen.dart';
-import 'lesson_reader_screen.dart';
+import 'courses_catalog_screen.dart';
 import 'custom_bottom_nav_bar.dart';
 
 class LearningPathScreen extends StatelessWidget {
@@ -158,9 +157,11 @@ class LearningPathScreen extends StatelessWidget {
                       height: 40,
                       child: ElevatedButton(
                         onPressed: () {
+                          // الشاشة الحالية وهمية (mock)؛ زر "Resume" يفتح
+                          // الكتالوج الحقيقي حتى تُستبدل في N4/N5.
                           Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const LessonReaderScreen()),
+                          MaterialPageRoute(builder: (context) => const CoursesCatalogScreen()),
                          );
                        },
                         style: ElevatedButton.styleFrom(
@@ -206,7 +207,7 @@ class LearningPathScreen extends StatelessWidget {
                         onTap: isUnlocked ? () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const CourseDetailScreen()),
+                            MaterialPageRoute(builder: (context) => const CoursesCatalogScreen()),
                           );
                         } : null,
                         borderRadius: BorderRadius.circular(12),
