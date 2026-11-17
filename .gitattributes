@@ -1,4 +1,8 @@
 # The N3 content tree is byte-checked by tests/content.n3.test.mjs, which
-# rejects CRLF and requires a trailing LF. Windows clones default to
-# core.autocrlf=true, so the checked-out bytes must be pinned to LF.
+# rejects CRLF and requires a trailing LF.
+#
+# The backend is a Node/TypeScript project whose lint gate (eslint-config-google)
+# enforces LF as well. Windows clones default to core.autocrlf=true, so pin the
+# checked-out bytes instead of relying on each developer's git config.
 networking-fundamentals/backend/content/** text eol=lf
+networking-fundamentals/backend/** text eol=lf

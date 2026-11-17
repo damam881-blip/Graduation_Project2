@@ -59,8 +59,10 @@ Every response is exactly one of these two shapes. No other top-level keys exist
 | `UNAUTHENTICATED` | 401 | A valid Bearer token is required. | No `Authorization` header, or not exactly `Bearer <token>` |
 | `INVALID_TOKEN` | 401 | The authentication token is invalid. | Token supplied but rejected (invalid, expired, revoked, disabled account) |
 | `FORBIDDEN` | 403 | You do not have permission to access this resource. | Authenticated but not a current holder of the required role; live role ≠ token role; disabled account; account deleted |
-| `METHOD_NOT_ALLOWED` | 405 | Only GET requests are supported. | Any verb other than GET (HTTP method is checked before authentication) |
+| `METHOD_NOT_ALLOWED` | 405 | Only GET requests are supported. | Any verb other than GET on a GET-only endpoint (HTTP method is checked before authentication) |
+| `METHOD_NOT_SUPPORTED` | 405 | This HTTP method is not supported for this endpoint. | Any verb other than POST on `POST /profile`. Kept separate because `METHOD_NOT_ALLOWED`'s message is GET-specific and is already asserted byte-for-byte |
 | `AUTH_SERVICE_UNAVAILABLE` | 503 | Authorization service is temporarily unavailable. | Unexpected failure while reading the current user record |
+| `PROFILE_UNAVAILABLE` | 503 | The profile service is temporarily unavailable. | Firestore rejected or failed the profile read/create |
 
 `message` is human-readable and may be displayed, but **clients must branch on `code`**, never on `message` text.
 
@@ -136,6 +138,45 @@ Same rules as `/studentAccess`; the successful payload contains `"role": "admin"
 - Disabled account: `401` `INVALID_TOKEN`.
 - Role/UID supplied via query string or custom headers: ignored.
 
+### 5.5 `POST /profile` — provision the caller's profile
+
+Requires `Authorization: Bearer <Firebase ID token>`. The request has **no
+body**; any body is ignored (tested).
+
+`200` — created on the first call, `created: false` on every later call
+(idempotent, safe to retry):
+```json
+{
+  "success": true,
+  "data": {
+    "uid": "verified-uid-example",
+    "displayName": "Sara Ahmed",
+    "preferredLanguage": "en",
+    "role": "student",
+    "status": "active",
+    "created": true
+  }
+}
+```
+
+- `users/{uid}` is created with the **Admin SDK only**. N2-04 sets
+  `allow create: if false`, so a direct client write is rejected with `403`
+  (tested in `tests/profile.http.test.mjs`).
+- `uid`, `email` and `displayName` come from the verified token; `role`,
+  `status` and the timestamps are server-owned. Client-supplied `uid`, `role`,
+  `status` or `email` never reach the document (tested).
+- `displayName` is trimmed and capped at 80 characters per the N2 field
+  contract; `preferredLanguage` defaults to `en` and stays owner-writable
+  through the normal rules path.
+- `401` → `UNAUTHENTICATED` / `INVALID_TOKEN`
+- `405` → `METHOD_NOT_SUPPORTED` with `Allow: POST`
+- `503` → `PROFILE_UNAVAILABLE` (retryable; never loop)
+
+Deferred by design: provisioning does **not** set the `role` custom claim, so a
+brand-new account still receives `403` from `/studentAccess` until the role
+claim is assigned. Role assignment is an authorization decision, not a profile
+write, and belongs to the N4/N5 work.
+
 ## 6. Flutter client contract (Developer B)
 
 1. **Token handling**
@@ -180,7 +221,14 @@ final class ApiFailure extends ApiResult<Never> {
 }
 ```
 
-6. **Guest mode** — guests never call `/me`, `/studentAccess`, or `/adminAccess`; protected actions must show the registration call-to-action.
+6. **Guest mode** — guests never call `/me`, `/studentAccess`, or
+   `/adminAccess`; protected actions must show the registration call-to-action.
+
+7. **Profile provisioning** — after a successful sign-in or registration, call
+   `POST /profile` once with the fresh ID token. It is idempotent, so retrying
+   after a `503` or a network error is safe. A profile failure must **not** be
+   reported as a failed registration: the Auth account already exists. Surface
+   it as a retryable warning and let the user continue.
 
 ## 7. Verification evidence
 
@@ -192,6 +240,14 @@ node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\test
 ```
 
 Last recorded result: **43/43 passing** (Authorization 16, Auth 6, Health 5, Firestore-deny-all 4, API unit 7, API HTTP 5), plus `npm run build` and `npm run lint` clean. This is the N1 subset; the current full gate is **177/177** (N2 suites included) plus **11/11** catalog tests.
+
+Profile provisioning (N3 addendum) is covered by
+`tests/profile.http.test.mjs` — 8/8 passing on 2026-11-17:
+
+```powershell
+cd E:\Graduation_Project2_GitHub\networking-fundamentals\backend
+node --test .\tests\profile.http.test.mjs
+```
 
 The unit tests fail if the envelope gains an undocumented field, if a status/message mapping changes, or if a code is added without updating the documented catalog.
 

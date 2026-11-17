@@ -10,7 +10,9 @@ export type ApiErrorCode =
   | "INVALID_TOKEN"
   | "FORBIDDEN"
   | "METHOD_NOT_ALLOWED"
-  | "AUTH_SERVICE_UNAVAILABLE";
+  | "METHOD_NOT_SUPPORTED"
+  | "AUTH_SERVICE_UNAVAILABLE"
+  | "PROFILE_UNAVAILABLE";
 
 /**
  * Canonical definition of one API error code.
@@ -43,9 +45,17 @@ export const API_ERRORS: Record<ApiErrorCode, ApiErrorDefinition> = {
     status: 405,
     message: "Only GET requests are supported.",
   },
+  METHOD_NOT_SUPPORTED: {
+    status: 405,
+    message: "This HTTP method is not supported for this endpoint.",
+  },
   AUTH_SERVICE_UNAVAILABLE: {
     status: 503,
     message: "Authorization service is temporarily unavailable.",
+  },
+  PROFILE_UNAVAILABLE: {
+    status: 503,
+    message: "The profile service is temporarily unavailable.",
   },
 };
 

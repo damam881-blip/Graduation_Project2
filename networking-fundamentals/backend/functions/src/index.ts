@@ -6,6 +6,7 @@ import {apiError} from "./api-errors";
 import type {ApiErrorCode} from "./api-errors";
 import {authenticate} from "./auth";
 import {authorize} from "./authorization";
+import {ensureProfile} from "./profile";
 
 setGlobalOptions({maxInstances: 10});
 
@@ -70,6 +71,36 @@ export const me = onRequest(async (request, response) => {
       uid: auth.user.uid,
     })
   );
+});
+
+// -------------------------------------------
+// Profile Provisioning Endpoint
+// -------------------------------------------
+
+export const profile = onRequest(async (request, response) => {
+  response.set("Cache-Control", "no-store");
+
+  if (request.method !== "POST") {
+    response.set("Allow", "POST");
+    sendApiError(response, "METHOD_NOT_SUPPORTED");
+    return;
+  }
+
+  const auth = await authenticate(request);
+
+  if (!auth.ok) {
+    sendApiError(response, auth.code);
+    return;
+  }
+
+  const result = await ensureProfile(auth.user);
+
+  if (!result.ok) {
+    sendApiError(response, "PROFILE_UNAVAILABLE");
+    return;
+  }
+
+  response.status(200).json(successResponse(result.profile));
 });
 
 // -------------------------------------------
