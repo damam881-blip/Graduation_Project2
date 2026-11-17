@@ -1,10 +1,10 @@
 # HANDOFF.md
 
 **Project:** Networking Fundamentals Learning Mobile Application - graduation MVP
-**Handoff date:** 2026-11-17 (Revision 9)
-**Revision:** 9 - Step 5 (N3) in progress: N3-01..N3-03 re-verified on a Windows checkout; N3 addendum (profile provisioning) shipped end to end; next is N3-04.
-**Last completed task:** N3 addendum - `POST /profile` provisioning (TypeScript backend + Flutter call) - VERIFIED on a physical device
-**Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03 done; N3-04 next)
+**Handoff date:** 2026-11-18 (Revision 10)
+**Revision:** 10 - Step 5 (N3): N3-06 Flutter content read (catalog + course detail + lesson reader) is complete and verified on a physical device; N3-04 is next.
+**Last completed task:** N3-06 - Flutter reads the published content version end to end - VERIFIED on a physical device, including Arabic/RTL and offline reads
+**Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03, N3-06 done; N3-04 next)
 
 ---
 
@@ -36,7 +36,13 @@
   - N3-03 Git-managed bilingual content (22-file tree + 19-test validator) - complete and verified; contract in `content-n3.md`
   - N3 addendum (not in the original N1-N7 list): `POST /profile` provisioning - complete and verified end to end; contract in `api-contract.md` 5.5. The backend creates `users/{uid}` with the Admin SDK (N2-04 keeps `allow create: false`), idempotently, and the Flutter client calls it after registration.
   - Windows reproducibility: `.gitattributes` pins LF for `backend/**`, because `content.n3` (byte checks) and `eslint-config-google` (`linebreak-style`) both reject CRLF on a default `core.autocrlf=true` clone. Verified green: content.n3 19/19, catalog 11/11, lint clean.
+  - N3-06 Flutter catalog + course detail + lesson reader - complete and verified on the physical device (commits `62572fc`, `1cdcf6c`):
+    - new `mobile/lib/features/content/`: D-09 read models and `ContentRepository` (pointer -> published version doc -> ordered children; `formatVersion == 1`, stale-item guard, six-course cap, fail-closed locks, `CONTENT_LOCKED`/`CONTENT_OFFLINE`/`CONTENT_UNAVAILABLE`, per-version in-memory cache)
+    - catalog keeps its visual design but shows real titles and Open/Locked from `users/{uid}/courseProgress`; loading, retry and empty states added
+    - course detail lists real lessons; lesson reader renders ordered text/image/video sections, checkpoint question/options (answer key stays server-side), Arabic/RTL through the existing `MyApp.changeLanguage`, and a cached offline read
+    - known gaps left untouched: `login_screen.dart` is still a mock (no `FirebaseAuth` call), so the signed-in demo uses the previously registered session; the mock `LearningPathScreen` now opens the real catalog; the guest buttons in Welcome and the catalog promo card are still no-ops
   - N3-04 validated importer/publish/rollback - next
+  - N3-05 AI knowledge exporter - still queued
 - **Confirmed N3 queue (from the N1-N7 roadmap):** N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 validated importer/publish/rollback -> N3-05 AI knowledge exporter -> N3-06 Flutter catalog/lesson reader -> N3-07 content review and first course end-to-end.
 
 ---
