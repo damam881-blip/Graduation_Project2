@@ -1,9 +1,9 @@
 # HANDOFF.md
 
 **Project:** Networking Fundamentals Learning Mobile Application - graduation MVP
-**Handoff date:** 2026-11-16 (Revision 8)
-**Revision:** 8 - Step 5 (N3) in progress: N3-01 catalog, N3-02 content read path, and N3-03 Git content verified; next is N3-04.
-**Last completed task:** N3-03 (Git-managed bilingual content tree + 19-test validator) - VERIFIED
+**Handoff date:** 2026-11-17 (Revision 9)
+**Revision:** 9 - Step 5 (N3) in progress: N3-01..N3-03 re-verified on a Windows checkout; N3 addendum (profile provisioning) shipped end to end; next is N3-04.
+**Last completed task:** N3 addendum - `POST /profile` provisioning (TypeScript backend + Flutter call) - VERIFIED on a physical device
 **Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03 done; N3-04 next)
 
 ---
@@ -34,6 +34,8 @@
   - N3-01 locked course catalog (6 courses, 12 bilingual lesson contracts) - complete and verified
   - N3-02 approved-content read path (D-09 direct SDK reads) - complete and verified; contract in `content-read-n3.md`
   - N3-03 Git-managed bilingual content (22-file tree + 19-test validator) - complete and verified; contract in `content-n3.md`
+  - N3 addendum (not in the original N1-N7 list): `POST /profile` provisioning - complete and verified end to end; contract in `api-contract.md` 5.5. The backend creates `users/{uid}` with the Admin SDK (N2-04 keeps `allow create: false`), idempotently, and the Flutter client calls it after registration.
+  - Windows reproducibility: `.gitattributes` pins LF for `backend/**`, because `content.n3` (byte checks) and `eslint-config-google` (`linebreak-style`) both reject CRLF on a default `core.autocrlf=true` clone. Verified green: content.n3 19/19, catalog 11/11, lint clean.
   - N3-04 validated importer/publish/rollback - next
 - **Confirmed N3 queue (from the N1-N7 roadmap):** N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 validated importer/publish/rollback -> N3-05 AI knowledge exporter -> N3-06 Flutter catalog/lesson reader -> N3-07 content review and first course end-to-end.
 
@@ -42,8 +44,9 @@
 ## 2. WORKING ENVIRONMENT
 
 **Paths (authoritative):**
-- Project root: `E:\Graduation_Project2` - **no `.git` anywhere** (no history; changes tracked textually only)
-- Repo: `E:\Graduation_Project2\networking-fundamentals`
+- GitHub clone under active work: `E:\Graduation_Project2_GitHub` (branch `main`, remote `damam881-blip/Graduation_Project2`)
+- Legacy local copy (do not edit): `E:\Graduation_Project2` - **no `.git` anywhere**
+- Repo: `E:\Graduation_Project2_GitHub\networking-fundamentals`
   - Firebase root: `...\backend`
   - Functions package (build/lint run here): `...\backend\functions`
   - Backend tests: `...\backend\tests`; Functions tests: `...\backend\functions\tests`
@@ -58,6 +61,8 @@
 
 **Emulators:** project **`demo-networking-p1`** - Auth **9099**, Firestore **8080**, Functions **5001** (base `http://127.0.0.1:5001/demo-networking-p1/us-central1`). They may not survive a session restart; emulator data is lost on restart and must be reseeded.
 
+`backend/firebase.json` binds auth/firestore/functions to `0.0.0.0` so a physical device can reach them over Wi-Fi, and `backend/.firebaserc` pins the project (an empty one starts `demo-no-project` and breaks Auth). `emulators:start --host` no longer exists in CLI 15; details and verification commands in `backend/docs/emulator-local.md`.
+
 Three test suites use **separate** Firestore namespaces and never touch the seeded fixtures: `demo-networking-rules` (N2-05 rules), `demo-networking-indexes` (N2-06 index query shapes), and `demo-networking-lifecycle` (N2-07 publish/rollback + account purge). Each clears only its own namespace.
 
 ```powershell
@@ -65,7 +70,7 @@ Get-NetTCPConnection -LocalPort 9099,8080,5001 -State Listen -ErrorAction Silent
 cd E:\Graduation_Project2\networking-fundamentals\backend
 firebase emulators:start --only auth,firestore,functions --project demo-networking-p1
 ```
-Expected: `All emulators ready!` and `Loaded functions definitions from source: health, me, studentAccess, adminAccess`.
+Expected: `All emulators ready!` and `Loaded functions definitions from source: health, me, profile, studentAccess, adminAccess`.
 
 ---
 
@@ -77,7 +82,7 @@ Expected: `All emulators ready!` and `Loaded functions definitions from source: 
 |---|---|
 | Gate | Tree matches RAR snapshot; 31/31 tests; disabled Admin -> 401 `INVALID_TOKEN` |
 | N1-06 | `backend\functions\src\api-response.ts` - v1 envelope helpers |
-| N1-07 | `backend\functions\src\api-errors.ts` - 5-code catalog, byte-identical messages |
+| N1-07 | `backend\functions\src\api-errors.ts` - error catalog (5 codes at N1; 7 after the N3 profile addendum: `+ METHOD_NOT_SUPPORTED`, `PROFILE_UNAVAILABLE`), byte-identical messages |
 | N1-08 | `backend\functions\src\index.ts` - all 4 endpoints use helpers; 17 observations byte-identical |
 | N1-09 | `backend\functions\tests\api-contract.test.cjs`, `backend\tests\api-contract.http.test.mjs` - 7 + 5 tests |
 | N1-11 | `backend\docs\api-contract.md`, `backend\docs\openapi.yaml` (validates: 4 paths, 5 codes) |
