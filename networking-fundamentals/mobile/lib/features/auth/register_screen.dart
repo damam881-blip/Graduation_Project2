@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/api/api_client.dart';
+import '../../core/api/profile_api.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -57,16 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Account created successfully.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      // For now, return to the previous screen.
-      // We will connect this to the authenticated app flow next.
-      Navigator.pop(context);
+      await _provisionProfileAndFinish();
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
 
@@ -111,6 +105,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       }
     }
+  }
+
+  /// Provisions `users/{uid}` and only then reports success.
+  ///
+  /// The Auth account already exists when this runs, so a profile failure is
+  /// surfaced as a retryable warning instead of a failed registration
+  /// (api-contract.md §6.7).
+  Future<void> _provisionProfileAndFinish() async {
+    final result = await ProfileApi.provision();
+
+    if (!mounted) return;
+
+    if (result is ApiFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Account created, but your profile was not synced. '
+            '${result.message}',
+          ),
+          backgroundColor: Colors.orange,
+          duration: const Duration(seconds: 8),
+          action: SnackBarAction(
+            label: 'Retry',
+            textColor: Colors.white,
+            onPressed: () {
+              if (!_isLoading) {
+                _provisionProfileAndFinish();
+              }
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Account created successfully.'),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    // For now, return to the previous screen.
+    // We will connect this to the authenticated app flow next.
+    Navigator.pop(context);
   }
 
   InputDecoration _inputDecoration({
