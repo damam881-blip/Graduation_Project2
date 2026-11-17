@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 /// Central Firebase bootstrap for the local-only MVP.
@@ -12,6 +12,7 @@ class FirebaseBootstrap {
   FirebaseBootstrap._();
 
   static const String projectId = 'demo-networking-p1';
+
   static const String emulatorHost = String.fromEnvironment(
     'FIREBASE_EMULATOR_HOST',
     defaultValue: '127.0.0.1',
@@ -28,7 +29,12 @@ class FirebaseBootstrap {
     }
 
     await Firebase.initializeApp(
-      demoProjectId: projectId,
+      options: const FirebaseOptions(
+        apiKey: 'demo-api-key',
+        appId: '1:1234567890:android:demo',
+        messagingSenderId: '1234567890',
+        projectId: projectId,
+      ),
     );
 
     FirebaseAuth.instance.useAuthEmulator(
