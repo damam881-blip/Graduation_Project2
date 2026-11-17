@@ -1,0 +1,4 @@
+# The N3 content tree is byte-checked by tests/content.n3.test.mjs, which
+# rejects CRLF and requires a trailing LF. Windows clones default to
+# core.autocrlf=true, so the checked-out bytes must be pinned to LF.
+networking-fundamentals/backend/content/** text eol=lf
