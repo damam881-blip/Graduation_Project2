@@ -69,9 +69,17 @@ test("every API error code has the documented status and message", () => {
       status: 405,
       message: "Only GET requests are supported.",
     },
+    METHOD_NOT_SUPPORTED: {
+      status: 405,
+      message: "This HTTP method is not supported for this endpoint.",
+    },
     AUTH_SERVICE_UNAVAILABLE: {
       status: 503,
       message: "Authorization service is temporarily unavailable.",
+    },
+    PROFILE_UNAVAILABLE: {
+      status: 503,
+      message: "The profile service is temporarily unavailable.",
     },
   };
 

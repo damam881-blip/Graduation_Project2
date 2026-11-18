@@ -79,7 +79,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.5),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: const Color(0xFF1E293B)),
                       ),
@@ -135,7 +135,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0284C7).withOpacity(0.2),
+                            color: const Color(0xFF0284C7).withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text('• TRUE / FALSE', style: TextStyle(fontSize: 9, color: Color(0xFF0284C7), fontWeight: FontWeight.bold)),
@@ -143,7 +143,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: Colors.green.withOpacity(0.2),
+                            color: Colors.green.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text('• Saved', style: TextStyle(fontSize: 9, color: Colors.green, fontWeight: FontWeight.bold)),
@@ -174,9 +174,9 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                        border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: const [
@@ -206,7 +206,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: index == 9 ? const Color(0xFF0284C7) : Colors.green.withOpacity(0.2),
+                            color: index == 9 ? const Color(0xFF0284C7) : Colors.green.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(color: index == 9 ? const Color(0xFF0284C7) : Colors.green),
                           ),
@@ -234,9 +234,9 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.6),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.4)),
+                        border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.4)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,7 +325,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFF0284C7).withOpacity(0.2) : const Color(0xFF1E293B).withOpacity(0.4),
+        color: isSelected ? const Color(0xFF0284C7).withValues(alpha: 0.2) : const Color(0xFF1E293B).withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isSelected ? const Color(0xFF0284C7) : const Color(0xFF1E293B),

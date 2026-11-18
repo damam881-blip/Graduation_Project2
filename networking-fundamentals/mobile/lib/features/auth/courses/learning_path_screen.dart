@@ -87,7 +87,7 @@ class LearningPathScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0284C7).withOpacity(0.2),
+                          color: const Color(0xFF0284C7).withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(Icons.account_tree_outlined, color: Color(0xFF0284C7), size: 18),
@@ -120,9 +120,9 @@ class LearningPathScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.6),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.3)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +133,7 @@ class LearningPathScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0284C7).withOpacity(0.2),
+                            color: const Color(0xFF0284C7).withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text('CONTINUE LEARNING', style: TextStyle(fontSize: 9, color: Color(0xFF0284C7), fontWeight: FontWeight.bold)),
@@ -197,10 +197,10 @@ class LearningPathScreen extends StatelessWidget {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 10),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(isUnlocked ? 0.5 : 0.25),
+                        color: const Color(0xFF1E293B).withValues(alpha: isUnlocked ? 0.5 : 0.25),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isUnlocked ? const Color(0xFF0284C7).withOpacity(0.3) : const Color(0xFF1E293B),
+                          color: isUnlocked ? const Color(0xFF0284C7).withValues(alpha: 0.3) : const Color(0xFF1E293B),
                         ),
                       ),
                       child: InkWell(
@@ -237,8 +237,8 @@ class LearningPathScreen extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                     decoration: BoxDecoration(
                                       color: course['badge'] == 'Completed' 
-                                          ? Colors.green.withOpacity(0.2) 
-                                          : (isUnlocked ? const Color(0xFF0284C7).withOpacity(0.2) : Colors.grey.withOpacity(0.1)),
+                                          ? Colors.green.withValues(alpha: 0.2) 
+                                          : (isUnlocked ? const Color(0xFF0284C7).withValues(alpha: 0.2) : Colors.grey.withValues(alpha: 0.1)),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(
@@ -322,17 +322,4 @@ class LearningPathScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: isSelected ? const Color(0xFF0284C7) : Colors.grey, size: 20),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(fontSize: 10, color: isSelected ? const Color(0xFF0284C7) : Colors.grey),
-        ),
-      ],
-    );
-  }
 }

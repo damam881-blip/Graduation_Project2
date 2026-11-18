@@ -34,9 +34,9 @@ class SignOutScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0284C7).withOpacity(0.2),
+                    color: const Color(0xFF0284C7).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.4)),
+                    border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.4)),
                   ),
                   child: const Icon(Icons.logout, color: Color(0xFF0284C7), size: 32),
                 ),
@@ -52,7 +52,7 @@ class SignOutScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.4),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: const Color(0xFF1E293B)),
                 ),
@@ -77,9 +77,9 @@ class SignOutScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green.withOpacity(0.3)),
+                  border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: const [

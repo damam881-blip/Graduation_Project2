@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart';
-import 'ai_tutor_screen.dart';
 import 'custom_bottom_nav_bar.dart';
 
 class SubnetCalculatorScreen extends StatefulWidget {
@@ -116,21 +114,6 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
     }
   }
 
-  // دالة مساعدة لعناصر الشريط السفلي التفاعلي
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isSelected ? const Color(0xFF0284C7) : Colors.grey, size: 22),
-          const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: isSelected ? const Color(0xFF0284C7) : Colors.grey, fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,9 +158,9 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.15),
+                        color: Colors.green.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                        border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
@@ -197,9 +180,9 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.4),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: hasError ? Colors.redAccent.withOpacity(0.5) : const Color(0xFF1E293B)),
+                        border: Border.all(color: hasError ? Colors.redAccent.withValues(alpha: 0.5) : const Color(0xFF1E293B)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,9 +254,9 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.redAccent.withOpacity(0.15),
+                          color: Colors.redAccent.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.redAccent.withOpacity(0.4)),
+                          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.4)),
                         ),
                         child: Row(
                           children: const [
@@ -305,14 +288,14 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B).withOpacity(0.5),
+                          color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.3)),
+                          border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.3)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildResultRow('Network address', '$networkAddress/${prefixController.text}'),
+                            _buildResultRow('Network address', '$networkAddress/${prefixController.text.replaceAll('/', '').trim()}'),
                             _buildResultRow('Subnet mask', subnetMask),
                             _buildResultRow('Usable host range', hostRange),
                             _buildResultRow('Broadcast address', broadcastAddress),
@@ -321,13 +304,13 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
                               children: [
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(color: const Color(0xFF0284C7).withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                                  decoration: BoxDecoration(color: const Color(0xFF0284C7).withValues(alpha: 0.2), borderRadius: BorderRadius.circular(6)),
                                   child: Text('• $totalAddresses addresses', style: const TextStyle(fontSize: 10, color: Color(0xFF0284C7), fontWeight: FontWeight.bold)),
                                 ),
                                 const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                  decoration: BoxDecoration(color: Colors.green.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                                  decoration: BoxDecoration(color: Colors.green.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(6)),
                                   child: Text('• $usableHosts usable hosts', style: const TextStyle(fontSize: 10, color: Colors.green, fontWeight: FontWeight.bold)),
                                 ),
                               ],
@@ -342,7 +325,7 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B).withOpacity(0.4),
+                          color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: const Color(0xFF1E293B)),
                         ),

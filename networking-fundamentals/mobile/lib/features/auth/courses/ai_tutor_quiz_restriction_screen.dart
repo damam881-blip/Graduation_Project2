@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'subnet_calculator_screen.dart';
-import 'profile_screen.dart';
 import 'custom_bottom_nav_bar.dart';
 
 class AiTutorQuizRestrictionScreen extends StatelessWidget {
@@ -46,7 +44,7 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.5),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFF1E293B)),
                 ),
@@ -89,7 +87,7 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.4),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: const Color(0xFF1E293B)),
                       ),
@@ -98,7 +96,7 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.amber.withOpacity(0.15),
+                              color: Colors.amber.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(Icons.shield_outlined, color: Colors.amber, size: 32),
@@ -121,9 +119,9 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.1),
+                        color: Colors.amber.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +151,7 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.5),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -162,7 +160,7 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.amber.withOpacity(0.2),
+                              color: Colors.amber.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: const Text('• IPv4 assessment active', style: TextStyle(fontSize: 11, color: Colors.amber, fontWeight: FontWeight.bold)),
@@ -197,7 +195,7 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.3),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: const Color(0xFF1E293B)),
                       ),
@@ -245,17 +243,4 @@ class AiTutorQuizRestrictionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isSelected ? const Color(0xFF0284C7) : Colors.grey, size: 22),
-          const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: isSelected ? const Color(0xFF0284C7) : Colors.grey, fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-        ],
-      ),
-    );
-  }
 }

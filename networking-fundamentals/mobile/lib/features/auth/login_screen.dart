@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
               // تابات الاختيار بين Sign in و Create account
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.5),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -95,7 +95,7 @@ class LoginScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.3),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: const Color(0xFF1E293B)),
                 ),
@@ -218,7 +218,7 @@ class LoginScreen extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Color(0xFF1E293B)),
-                    backgroundColor: const Color(0xFF1E293B).withOpacity(0.5),
+                    backgroundColor: const Color(0xFF1E293B).withValues(alpha: 0.5),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   child: const Text('Continue as guest', style: TextStyle(fontSize: 15, color: Colors.white)),
@@ -231,9 +231,9 @@ class LoginScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0284C7).withOpacity(0.1),
+                  color: const Color(0xFF0284C7).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [

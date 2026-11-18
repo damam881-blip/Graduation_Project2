@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'subnet_calculator_screen.dart';
-import 'profile_screen.dart';
 import 'custom_bottom_nav_bar.dart';
 
 class AiTutorScreen extends StatefulWidget {
@@ -66,7 +64,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.5),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: const Color(0xFF1E293B)),
                 ),
@@ -135,9 +133,9 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B).withOpacity(0.4),
+                          color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.4)),
+                          border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.4)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +160,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B).withOpacity(0.4),
+                          color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: const Color(0xFF1E293B)),
                         ),
@@ -206,7 +204,7 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.3),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: const Color(0xFF1E293B)),
                       ),
@@ -289,17 +287,4 @@ class _AiTutorScreenState extends State<AiTutorScreen> {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: isSelected ? const Color(0xFF0284C7) : Colors.grey, size: 22),
-          const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: isSelected ? const Color(0xFF0284C7) : Colors.grey, fontSize: 10, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
-        ],
-      ),
-    );
-  }
 }

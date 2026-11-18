@@ -11,7 +11,7 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +114,7 @@ class WelcomeScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.5),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: const Color(0xFF1E293B)),
                 ),
@@ -126,7 +126,7 @@ class WelcomeScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0284C7).withOpacity(0.2),
+                            color: const Color(0xFF0284C7).withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text('• LAN TO WAN', style: TextStyle(fontSize: 10, color: Color(0xFF0284C7))),
@@ -153,7 +153,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 24),
 
               // 4. الأزرار الثلاثة السفلية
               SizedBox(
@@ -193,7 +193,7 @@ class WelcomeScreen extends StatelessWidget {
                   },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Color(0xFF1E293B)),
-                    backgroundColor: const Color(0xFF1E293B).withOpacity(0.5),
+                    backgroundColor: const Color(0xFF1E293B).withValues(alpha: 0.5),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   child: const Text('Create a free account', style: TextStyle(fontSize: 15, color: Colors.white)),

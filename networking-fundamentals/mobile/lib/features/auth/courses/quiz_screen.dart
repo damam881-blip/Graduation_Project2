@@ -149,7 +149,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.5),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: const Color(0xFF1E293B)),
                       ),
@@ -164,7 +164,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                                 children: [
                                   const Text('QUESTION', style: TextStyle(fontSize: 9, color: Colors.grey, letterSpacing: 0.5)),
                                   const SizedBox(height: 2),
-                                  Text('0${currentQuestionIndex + 1} / 10', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                                  Text('${(currentQuestionIndex + 1).toString().padLeft(2, '0')} / 10', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                                 ],
                               ),
                               Column(
@@ -205,7 +205,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0284C7).withOpacity(0.2),
+                            color: const Color(0xFF0284C7).withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text('• MULTIPLE CHOICE', style: TextStyle(fontSize: 9, color: Color(0xFF0284C7), fontWeight: FontWeight.bold)),
@@ -213,7 +213,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: Colors.amber.withOpacity(0.15),
+                            color: Colors.amber.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Text('• Not saved yet', style: TextStyle(fontSize: 9, color: Colors.amber, fontWeight: FontWeight.bold)),
@@ -250,7 +250,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                             decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF0284C7).withOpacity(0.2) : const Color(0xFF1E293B).withOpacity(0.4),
+                              color: isSelected ? const Color(0xFF0284C7).withValues(alpha: 0.2) : const Color(0xFF1E293B).withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: isSelected ? const Color(0xFF0284C7) : const Color(0xFF1E293B),
@@ -286,9 +286,9 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withOpacity(0.1),
+                        color: Colors.amber.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                        border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: const [
@@ -323,7 +323,7 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
                           bgColor = const Color(0xFF0284C7);
                           textColor = Colors.white;
                         } else if (isCompleted) {
-                          bgColor = Colors.green.withOpacity(0.2);
+                          bgColor = Colors.green.withValues(alpha: 0.2);
                           textColor = Colors.green;
                         }
 

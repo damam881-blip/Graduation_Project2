@@ -158,9 +158,9 @@ class QuizResultScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E293B).withOpacity(0.5),
+                        color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.green.withOpacity(0.4)),
+                        border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
                       ),
                       child: Column(
                         children: [
@@ -186,9 +186,9 @@ class QuizResultScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0284C7).withOpacity(0.15),
+                        color: const Color(0xFF0284C7).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFF0284C7).withOpacity(0.4)),
+                        border: Border.all(color: const Color(0xFF0284C7).withValues(alpha: 0.4)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,10 +299,10 @@ class QuizResultScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.4),
+        color: const Color(0xFF1E293B).withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isCorrect ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.4),
+          color: isCorrect ? Colors.green.withValues(alpha: 0.3) : Colors.red.withValues(alpha: 0.4),
         ),
       ),
       child: Column(

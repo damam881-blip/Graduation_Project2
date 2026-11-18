@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'main_navigation_screen.dart'; // أو صفحاتك المختلفة
 // (تقدري تربطي أزرار التنقل هنا بالشاشات الخاصة بك)
 
 class AppBottomNavBar extends StatelessWidget {

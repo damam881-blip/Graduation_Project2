@@ -165,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         fontSize: 14,
       ),
       filled: true,
-      fillColor: const Color(0xFF1E293B).withOpacity(0.3),
+      fillColor: const Color(0xFF1E293B).withValues(alpha: 0.3),
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
@@ -265,7 +265,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 // Tabs
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1E293B).withOpacity(0.5),
+                    color: const Color(0xFF1E293B).withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
@@ -623,7 +623,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0284C7),
                       disabledBackgroundColor:
-                          const Color(0xFF0284C7).withOpacity(0.5),
+                          const Color(0xFF0284C7).withValues(alpha: 0.5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

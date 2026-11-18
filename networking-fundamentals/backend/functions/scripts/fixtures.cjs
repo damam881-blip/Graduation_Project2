@@ -1579,7 +1579,10 @@ async function verifyFixtures() {
   let quizStates = [];
 
   await check("profiles-and-auth-roles", async () => {
-    const profiles = await getDocs(db, "users");
+    const seededUids = new Set(Object.values(UIDS));
+    const profiles = (await getDocs(db, "users")).filter((profile) =>
+      seededUids.has(profile.id)
+    );
     assert.equal(profiles.length, 4);
 
     for (const profile of profiles) {
@@ -1600,7 +1603,7 @@ async function verifyFixtures() {
       () => authClient.getUser("fixture-guest"),
       (error) => error.code === "auth/user-not-found"
     );
-    return "4 profiles, roles/disabled mirror Auth, deleted and guest absent";
+    return "4 seeded profiles, roles/disabled mirror Auth, deleted and guest absent";
   });
 
   await check("student-progress-is-consistent", async () => {

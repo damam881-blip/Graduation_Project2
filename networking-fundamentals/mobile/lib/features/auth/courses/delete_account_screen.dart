@@ -41,9 +41,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.15),
+                  color: Colors.redAccent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.redAccent.withOpacity(0.4)),
+                  border: Border.all(color: Colors.redAccent.withValues(alpha: 0.4)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +66,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B).withOpacity(0.4),
+                  color: const Color(0xFF1E293B).withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: const Color(0xFF1E293B)),
                 ),
@@ -143,7 +143,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   icon: const Icon(Icons.warning, size: 16, color: Colors.white),
                   label: const Text('Permanently delete account', style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent.withOpacity(0.8),
+                    backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                 ),
