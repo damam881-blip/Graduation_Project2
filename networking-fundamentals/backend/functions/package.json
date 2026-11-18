@@ -19,7 +19,11 @@
     "content:import:preview": "node scripts/import-content.cjs preview",
     "content:import:publish": "node scripts/import-content.cjs publish",
     "content:import:rollback": "node scripts/import-content.cjs rollback",
-    "content:assets:serve": "node scripts/serve-assets.cjs"
+    "content:assets:serve": "node scripts/serve-assets.cjs",
+    "ai:export:test": "node --test ../tests/ai-export.n3.test.mjs",
+    "ai:export:validate": "node scripts/export-ai.cjs validate",
+    "ai:export:run": "node scripts/export-ai.cjs export",
+    "ai:export:preview": "node scripts/export-ai.cjs preview"
   },
   "engines": {
     "node": "24"

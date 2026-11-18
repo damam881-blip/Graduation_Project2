@@ -77,7 +77,9 @@ SVG bytes are copied by `publishAssets()` into
 load the mapped `imageUrl`. Set `CONTENT_ASSET_BASE_URL` to the laptop IP during
 local verification; a deployed environment supplies its HTTPS Storage origin.
 `firestore.rules` still denies all client access to `private/**`, `quizBanks/**`,
-and `aiSections/**`, and is unchanged by N3-04.
+and `aiSections/**`, and is unchanged by N3-04. N3-05 later generates the
+server-only `aiSections/**` documents from the published version; see
+`ai-export-n3.md`.
 
 ## 5. Lifecycle transactions
 

@@ -41,7 +41,7 @@ updated tree is detectable at import time.
 | Tier | Where it lives | Client-readable? |
 |---|---|---|
 | Public approved content | this directory | yes, under the N2-04 rules |
-| Server-only approved content | AI source sections, maintained outside this tree | no |
+| Server-only approved content | AI source sections, generated from a published version by N3-05 (`docs/ai-export-n3.md`) | no |
 | Protected assessment data | quiz banks, answer keys, explanations | **never** |
 
 **This tree must never contain** quiz-bank questions, `correctOptionId`,

@@ -1,10 +1,10 @@
 # HANDOFF.md
 
 **Project:** Networking Fundamentals Learning Mobile Application - graduation MVP
-**Handoff date:** 2026-11-18 (Revision 14)
-**Revision:** 14 - Five UI gaps closed and verified on the physical device `RKGYC042G6T`: real `FirebaseAuth` sign-in (with validation + wrong-credential error), real `signOut()` -> welcome, real `POST /deleteAccount` (3 client validations + re-auth + backend tombstone purge verified end to end), the Learn nav item wired to `LearningPathScreen`, and the AI Tutor item now opens the quiz focus-mode screen while an assessment is active (normal tutor after submission). `flutter analyze` 0 issues, `flutter test` **44/44** (7 suites), backend combined regression **264/264** (15 files) + `fixtures:verify` 17/17; N3-05 is next.
-**Last completed task:** N3 gap-fix stabilization - closed the five gaps found by the test sweep, added `POST /deleteAccount` to the backend with the V-20 tombstone guard in `ensureProfile`, and re-verified everything on the physical device
-**Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03, N3-04, N3-06 done; N3-05 next)
+**Handoff date:** 2026-11-18 (Revision 15)
+**Revision:** 15 - N3-05 approved AI knowledge exporter is complete: the active published version is resolved, approved bilingual lesson prose is exported to server-only `aiSections/**`, and quiz IDs/checkpoint/answer keys/explanations are rejected before any write. `flutter analyze` 0 issues, `flutter test` **44/44** (7 suites), backend combined regression **273/273** (16 files) + `fixtures:verify` 17/17; only N3-07 remains.
+**Last completed task:** N3-05 - approved AI knowledge exporter (`functions/scripts/ai-export.cjs`, `export-ai.cjs`, `docs/ai-export-n3.md`, 9 tests), with the D-09 read path and `firestore.rules` unchanged
+**Current phase:** Step 5 = **N3 Approved content and catalog** - IN PROGRESS (N3-01, N3-02, N3-03, N3-04, N3-05, N3-06 done; N3-07 next)
 
 ---
 
@@ -48,7 +48,7 @@
     - `backend/tests/content-import.n3.test.mjs` 14/14 in namespace `demo-networking-contentimport`: missing fields, duplicate IDs, broken references, insufficient bank size, missing private key, client-side answer leak, asset/video mapping, staging invisibility under the real rules, atomic publish, failed publish with unchanged pointer, rollback, failed rollback with unchanged pointer
     - device verified on `RKGYC042G6T` with CLI-published `v004`: course detail showed `15 min read` (new v004 data, not cached v001 fixtures) and the lesson reader showed the real section text/alt/caption and checkpoint after rebuilding with `FIREBASE_EMULATOR_HOST=192.168.1.4`; CLI rollback restored `v001`, fixtures were reseeded afterwards
   - Stabilization gate (2026-11-18) - VERIFIED: `flutter analyze` 0 issues (85 deprecated `withOpacity` calls migrated to `withValues`, 9 unused imports and 5 unused helpers removed); the default counter widget test was replaced with a real `ProviderScope(child: MyApp())` welcome-screen/locale smoke test; `welcome_screen.dart` is now scrollable so small surfaces no longer overflow; `api-contract.test.cjs` knows the two profile-addendum error codes; fixture verification checks the 4 seeded profiles instead of requiring the `users` collection to contain only seeded accounts. Rebuilt and reinstalled on `RKGYC042G6T`; logcat showed no Flutter overflow/exception and the UI hierarchy contained the full welcome screen.
-  - Test pass (2026-11-18, current) - VERIFIED: `flutter analyze` 0 issues, `flutter test` **44/44** (api_client 7, content_models 11, quiz_flow 7, screens 8, subnet_calculator 5, welcome_flow 5, widget_test 1). Two root-cause bugs were found by the earlier tests and fixed - `subnet_calculator_screen.dart` stripped a user-typed `/` from the prefix before rendering `Network address` (was rendering `addr//26`), and `quiz_screen.dart` used `'0${index+1} / 10'` (rendered `010 / 10`) now `padLeft(2, '0')`. Backend: build + lint clean, **15 files 264/264** (fixtures 19, catalog 11, authorization 16, api-contract 7+5, delete-account 9+3, content 19, content-import 14, content-read 34, firestore rules 91+4, indexes 20, lifecycle 23, auth 6, health 5, profile 8) plus `fixtures:verify` 17/17 and `import-content validate` exit 0.
+  - Test pass (2026-11-18, current) - VERIFIED: `flutter analyze` 0 issues, `flutter test` **44/44** (api_client 7, content_models 11, quiz_flow 7, screens 8, subnet_calculator 5, welcome_flow 5, widget_test 1). Two root-cause bugs were found by the earlier tests and fixed - `subnet_calculator_screen.dart` stripped a user-typed `/` from the prefix before rendering `Network address` (was rendering `addr//26`), and `quiz_screen.dart` used `'0${index+1} / 10'` (rendered `010 / 10`) now `padLeft(2, '0')`. Backend: build + lint clean, **16 files 273/273** (fixtures 19, catalog 11, authorization 16, api-contract 7+5, delete-account 9+3, ai-export 9, content 19, content-import 14, content-read 34, firestore rules 91+4, indexes 20, lifecycle 23, auth 6, health 5, profile 8) plus `fixtures:verify` 17/17 and `import-content validate` exit 0.
   - Device sweep (2026-11-18, `RKGYC042G6T`, APK built with `FIREBASE_EMULATOR_HOST=192.168.1.4`) - VERIFIED: welcome (no overflow), sign-in, guest catalog (6 courses, 4 locked as guest, RTL mirror + Arabic titles), course detail, lesson reader (fixture content, checkpoint -> quiz), full quiz `07/10` -> `08/10` -> jump to `10/10` -> submission -> result `80%`, registration empty-field validation (4 messages, no Auth call), subnet calculator recalc `10.20.30.0/24` (256/254/binary), AI tutor General/This-course tab switch, profile -> sign-out confirm -> delete-account screen, and a real registration end to end: `device.test01@example.test` created in Auth (displayName `Device Tester`) and `users/{uid}` provisioned (`role: student`, `status: active`). At this point the sign-in, sign-out and delete buttons were still design-stage no-ops; the five gaps it exposed are listed below and were closed afterwards. Final logcat scan: no Flutter exceptions/overflows.
   - Gap-fix pass (2026-11-18, `RKGYC042G6T`, APK built with `FIREBASE_EMULATOR_HOST=192.168.1.4`) - VERIFIED on the device after the five gaps were closed:
     - **Gap 1 sign-in:** empty submit showed `Please enter your email.` / `Please enter your password.`; a wrong credential showed the red `Incorrect email or password.` SnackBar; a real `device.test02@example.test` sign-in navigated to `Your learning path` (`uid mr0SXZoPg0GEPlU3Qq2RyGdiwiyz`). Registration of the same account earlier provisioned `users/{uid}` through `POST /profile`.
@@ -59,8 +59,11 @@
     - Final logcat scan: no Flutter exceptions, no `RenderFlex overflow`, no app errors.
   - Backend deletion coverage (2026-11-18): `backend/tests/delete-account.http.test.mjs` **9/9** (method 405 + `Allow: POST`, missing/invalid token, `no-store`, full purge order, repeat-after-purge, stale token, client tombstone write denied, live-token tombstone guard) and `backend/functions/tests/delete-account.test.cjs` **3/3** (full purge, resume after a partial failure, fail-closed `FORBIDDEN`). `profile.http.test.mjs` 8/8 and `api-contract.test.cjs` 7/7 after the V-20 guard. The Auth emulator rejects tokens of deleted users, so HTTP repeat/stale-token tests assert 401; the `FORBIDDEN` branch is covered by the direct unit test.
   - Known gaps found while testing - **all five now closed** (see the gap-fix pass above). Remaining non-gaps, left as-is by design: the Welcome and catalog-promo guest buttons are no-ops, and the Profile/sign-out/delete screens still render static demo identity strings (`Sara Ahmed`) rather than the signed-in user's real profile.
-  - N3-05 AI knowledge exporter - next
-- **Confirmed N3 queue (from the N1-N7 roadmap):** N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 validated importer/publish/rollback (done) -> N3-05 AI knowledge exporter -> N3-06 Flutter catalog/lesson reader (done) -> N3-07 content review and first course end-to-end.
+  - N3-05 AI knowledge exporter - complete and verified; contract in `backend/docs/ai-export-n3.md`:
+    - `functions/scripts/ai-export.cjs` resolves the active pointer (or an explicit published `--version`), reads path-scoped courses/lessons with the Admin SDK, and builds one EN + one AR section per approved lesson under `contentVersions/{version}/aiSections/**`. It ignores `quizId`/`checkpoint`, never reads `quizBanks/**` or checkpoint keys, rejects answer-key/explanation fields, strips Markdown, hashes each section, and fails closed on any V-11 violation.
+    - `functions/scripts/export-ai.cjs` CLI: `validate` (read-only), `export` (idempotent batches), `preview` (metadata only). CLI verified in namespace `demo-networking-aiexport-cli`: 1 course / 1 lesson / 2 sections, checksum `dab859ab...9678e41`, orders 1 and 2, `written: 2`, `batches: 1`.
+    - `backend/tests/ai-export.n3.test.mjs` 9/9 in namespace `demo-networking-aiexport`: bilingual shape, ID grammar, no assessment tokens, plain text, deterministic checksum, unapproved/leak fail-closed, pinned server-only writes, idempotence, client denial under real rules with D-09 lesson read unchanged, and non-published fail-closed.
+- **Confirmed N3 queue (from the N1-N7 roadmap):** N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 validated importer/publish/rollback (done) -> N3-05 AI knowledge exporter (done) -> N3-06 Flutter catalog/lesson reader (done) -> N3-07 content review and first course end-to-end.
 
 ---
 
@@ -90,7 +93,7 @@ Three test suites use **separate** Firestore namespaces and never touch the seed
 
 ```powershell
 Get-NetTCPConnection -LocalPort 9099,8080,5001 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalPort
-cd E:\Graduation_Project2\networking-fundamentals\backend
+cd E:\Graduation_Project2_GitHub\networking-fundamentals\backend
 firebase emulators:start --only auth,firestore,functions --project demo-networking-p1
 ```
 Expected: `All emulators ready!` and `Loaded functions definitions from source: health, me, profile, deleteAccount, studentAccess, adminAccess`.
@@ -336,16 +339,17 @@ cd .. && node --test <six files>  -> tests 43, pass 43, fail 0
 - **17/17** fixture verification checks; **19/19** fixture tests; 424-document fixture set reproducible.
 - Least-privilege rules compile and enforce the matrix; only `firestore.rules` differs from the N2-03 baseline.
 - `firestore.indexes.json` holds 11 composite indexes matching the canonical plan; the static contract and live query shapes both pass.
-- `data-model.md`, `schema-lock.md`, `fixtures-n2.md`, `rules-n2.md`, `indexes-n2.md`, `lifecycle-n2.md`, `catalog-n3.md`, `content-read-n3.md`, `content-n3.md`, `api-contract.md`, `openapi.yaml` written and cross-linked.
+- `data-model.md`, `schema-lock.md`, `fixtures-n2.md`, `rules-n2.md`, `indexes-n2.md`, `lifecycle-n2.md`, `catalog-n3.md`, `content-read-n3.md`, `content-n3.md`, `content-import-n3.md`, `ai-export-n3.md`, `api-contract.md`, `openapi.yaml` written and cross-linked.
 - Publish/rollback, staging invisibility, purge order, tombstone retention, and client resurrection denial are verified.
 - Rules, index, and lifecycle suite isolation proven (17/17 before and after each).
 - **Deletion addendum (2026-11-18):** `POST /deleteAccount` executes the section 7 purge order and `ensureProfile` enforces the V-20 tombstone guard; `delete-account.http.test.mjs` 9/9 and `functions/tests/delete-account.test.cjs` 3/3.
-- **Combined backend regression 264/264** across the 15-file command (exit 0): fixtures 19, catalog 11, authorization 16, api-contract 7+5, delete-account 9+3, content 19, content-import 14, content-read 34, firestore rules 91+4, indexes 20, lifecycle 23, auth 6, health 5, profile 8.
+- **N3-05 exporter verified:** `export-ai.cjs` validate/export/preview ran in namespace `demo-networking-aiexport-cli`; `ai-export.n3.test.mjs` 9/9 under the real rules; no `quizId`, checkpoint, answer key, or explanation in any generated section; D-09 lesson reads still allowed while `aiSections/**` reads are denied.
+- **Combined backend regression 273/273** across the 16-file command (exit 0): fixtures 19, catalog 11, authorization 16, api-contract 7+5, delete-account 9+3, ai-export 9, content 19, content-import 14, content-read 34, firestore rules 91+4, indexes 20, lifecycle 23, auth 6, health 5, profile 8.
 - **Flutter: `flutter analyze` 0 issues, `flutter test` 44/44** (7 suites: api_client 7, content_models 11, quiz_flow 7, screens 8, subnet_calculator 5, welcome_flow 5, widget_test 1). New tests cover login validation, Learn-nav navigation, the 3-step delete validation, quiz/submission focus mode, and result-screen tutor reopen.
 - **Physical device `RKGYC042G6T`:** all five gaps verified end to end (sign-in, sign-out, delete with backend evidence, Learn nav, quiz focus mode), logcat clean.
 
 **PENDING / NOT DONE**
-- **Step 5 (N3) is in progress.** N3-01, N3-02, N3-03, N3-04, and N3-06 are complete; N3-05 (AI knowledge exporter) and N3-07 remain.
+- **Step 5 (N3) is in progress.** N3-01, N3-02, N3-03, N3-04, N3-05, and N3-06 are complete; only N3-07 (content review and first-course end-to-end teaching quality) remains.
 - Lesson bodies and media are imported by N3-04 into `v004` (validated, stage/publish/rollback verified); the reseeded `v001` fixtures still seed placeholder sections for the demo. Publishing `v004` is an explicit CLI action, not automatic on fixture seed.
 - The local asset store serves SVGs over `http://<laptop-ip>:8081`; a deployed environment must supply `CONTENT_ASSET_BASE_URL` pointing to HTTPS Storage.
 - Rules and indexes are not deployed; deployment is out of MVP scope.
@@ -354,6 +358,7 @@ cd .. && node --test <six files>  -> tests 43, pass 43, fail 0
 - **V-20 tombstone guard is enforced in `ensureProfile`** since the deletion addendum (2026-11-18). Every remaining user-data mutation endpoint (N4/N5) must add the same guard inside its transaction before it is claimed enforced.
 - **Deletion 503 (`DELETION_UNAVAILABLE`) has no dedicated forced-failure test**; the resume and fail-closed branches are covered, but the unexpected-failure path is only reachable by breaking Firestore mid-call.
 - **Retention/purge is manual.** The 3-version policy is verified as an algorithm but no job runs it.
+- **AI export has no automatic trigger.** Run `npm run ai:export:run` after a version is published (and again if approved prose changes); the local Python AI service is still a health stub, so retrieval/inference remains N5/N6 work.
 - Token revocation/disabled state not enforced until token expiry (F-01, Medium). Reads remain possible for an unexpired token; writes are backend-only. The lifecycle suite confirms a purged profile is gone and writes are denied.
 - 7 production advisories, 0 high/critical (F-04).
 - No rate limiting (F-05).
@@ -371,7 +376,7 @@ cd .. && node --test <six files>  -> tests 43, pass 43, fail 0
 
 ## 6. NEXT STEPS (in order)
 
-**Step 0 - resume gate (do first).** Start emulators, build, lint, seed fixtures, then run the full 264-test command.
+**Step 0 - resume gate (do first).** Start emulators, build, lint, seed fixtures, then run the full 273-test command.
 
 ```powershell
 Get-NetTCPConnection -LocalPort 9099,8080,5001 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalPort
@@ -382,26 +387,27 @@ npm run fixtures:test
 npm run catalog:test
 npm run fixtures:seed
 npm run content:test
+npm run ai:export:test
 cd ..
 npm run content:import:test
-node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\tests\health.http.test.mjs .\tests\firestore.rules.test.mjs .\tests\firestore.rules.n2.test.mjs .\tests\indexes.n2.test.mjs .\tests\lifecycle.n2.test.mjs .\tests\content-read.n3.test.mjs .\tests\content.n3.test.mjs .\tests\content-import.n3.test.mjs .\tests\profile.http.test.mjs .\tests\delete-account.http.test.mjs .\functions\tests\api-contract.test.cjs .\functions\tests\authorization.http.test.cjs .\functions\tests\delete-account.test.cjs
+node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\tests\health.http.test.mjs .\tests\firestore.rules.test.mjs .\tests\firestore.rules.n2.test.mjs .\tests\indexes.n2.test.mjs .\tests\lifecycle.n2.test.mjs .\tests\content-read.n3.test.mjs .\tests\content.n3.test.mjs .\tests\content-import.n3.test.mjs .\tests\profile.http.test.mjs .\tests\delete-account.http.test.mjs .\tests\ai-export.n3.test.mjs .\functions\tests\api-contract.test.cjs .\functions\tests\authorization.http.test.cjs .\functions\tests\delete-account.test.cjs
 ```
-Verified 2026-11-18 after the gap-fix pass: build/lint clean, fixtures 19/19, fixtures:verify 17/17, catalog 11/11, content 19/19, import 14/14, full regression **264 / pass 264 / fail 0**, `flutter analyze` **No issues found**, `flutter test` **44/44**. If HTTP tests fail, the emulators are not running.
+Verified 2026-11-18 after the N3-05 pass: build/lint clean, fixtures 19/19, fixtures:verify 17/17, catalog 11/11, content 19/19, ai-export 9/9, import 14/14, full regression **273 / pass 273 / fail 0**, `flutter analyze` **No issues found**, `flutter test` **44/44**. If HTTP tests fail, the emulators are not running.
 
-**Step 1 - Step 5 (N3): continue with N3-05 (AI knowledge exporter).**
-- Step 4 (N2) is complete; no N2 task remains. N3-01, N3-02, N3-03, N3-04, and N3-06 are complete.
-- Confirmed N3 queue: N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 importer/publish/rollback (done) -> N3-05 AI exporter -> N3-06 Flutter reader (done) -> N3-07 content review.
-- N3-05 must export approved AI sections from the published content into the server-only `aiSections/**` path, with no quiz IDs, answers, or explanations in client-readable documents, and must keep the existing D-09 read path unchanged.
+**Step 1 - Step 5 (N3): continue with N3-07 (content review).**
+- Step 4 (N2) is complete; no N2 task remains. N3-01, N3-02, N3-03, N3-04, N3-05, and N3-06 are complete.
+- Confirmed N3 queue: N3-01 catalog (done) -> N3-02 content read path (done) -> N3-03 Git-managed bilingual content (done) -> N3-04 importer/publish/rollback (done) -> N3-05 AI exporter (done) -> N3-06 Flutter reader (done) -> N3-07 content review.
+- N3-05 is closed: approved AI sections are exported from the published version into server-only `aiSections/**`; quiz IDs, answers, and explanations are rejected; the D-09 read path is unchanged.
 - Do not reopen N2 items. Retention/purge automation, TTL, and deployment are still out of N3.
 
 **Verification after every step:**
 ```powershell
-cd E:\Graduation_Project2\networking-fundamentals\backend\functions
-npm run build; npm run lint; npm run fixtures:test; npm run catalog:test; npm run content:test
+cd E:\Graduation_Project2_GitHub\networking-fundamentals\backend\functions
+npm run build; npm run lint; npm run fixtures:test; npm run catalog:test; npm run content:test; npm run ai:export:test
 cd ..
-node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\tests\health.http.test.mjs .\tests\firestore.rules.test.mjs .\tests\firestore.rules.n2.test.mjs .\tests\indexes.n2.test.mjs .\tests\lifecycle.n2.test.mjs .\tests\content-read.n3.test.mjs .\tests\content.n3.test.mjs .\tests\content-import.n3.test.mjs .\tests\profile.http.test.mjs .\tests\delete-account.http.test.mjs .\functions\tests\api-contract.test.cjs .\functions\tests\authorization.http.test.cjs .\functions\tests\delete-account.test.cjs
+node --test .\tests\api-contract.http.test.mjs .\tests\auth.http.test.mjs .\tests\health.http.test.mjs .\tests\firestore.rules.test.mjs .\tests\firestore.rules.n2.test.mjs .\tests\indexes.n2.test.mjs .\tests\lifecycle.n2.test.mjs .\tests\content-read.n3.test.mjs .\tests\content.n3.test.mjs .\tests\content-import.n3.test.mjs .\tests\profile.http.test.mjs .\tests\delete-account.http.test.mjs .\tests\ai-export.n3.test.mjs .\functions\tests\api-contract.test.cjs .\functions\tests\authorization.http.test.cjs .\functions\tests\delete-account.test.cjs
 ```
-Expected: build/lint clean, 19/19 fixtures, 11/11 catalog, 19/19 content, **264/264** regression (grows as later steps add tests).
+Expected: build/lint clean, 19/19 fixtures, 11/11 catalog, 19/19 content, 9/9 ai-export, **273/273** regression (grows as later steps add tests).
 
 ---
 
@@ -420,8 +426,8 @@ Expected: build/lint clean, 19/19 fixtures, 11/11 catalog, 19/19 content, **264/
 
 > This is the handoff from my previous session. Read `E:\Graduation_Project2_GitHub\HANDOFF.md` carefully, confirm your understanding in a few lines, then continue from "Next Steps".
 >
-> Key context: the project lives at `E:\Graduation_Project2\networking-fundamentals` (Windows/PowerShell, no git). Step 3 (N1-06...N1-12 Standardized API Contracts) is complete. **Step 4 (N2 Data model & security rules) is complete**: N2-01 `backend\docs\data-model.md`; N2-02 `backend\docs\schema-lock.md`; N2-03 424-doc fixtures (17/17 verify, 19/19 tests); N2-04 least-privilege `backend\firestore.rules`; N2-05 91-test rules suite (`backend\tests\firestore.rules.n2.test.mjs`); N2-06 11 composite indexes (`backend\firestore.indexes.json`) with a 20-test contract/query suite (`backend\tests\indexes.n2.test.mjs`); N2-07 23-test lifecycle suite (`backend\tests\lifecycle.n2.test.mjs`) plus `backend\docs\lifecycle-n2.md`. **Step 5 (N3) is in progress:** N3-01 locked the 6-course bilingual catalog (`backend\functions\scripts\catalog.cjs`, `backend\docs\catalog-n3.md`, 11 tests); N3-02 verified the approved-content read path (`backend\docs\content-read-n3.md`, `backend\tests\content-read.n3.test.mjs`, 34 tests): D-09 direct Firestore SDK reads, no Functions read endpoints; D-10 catalog IDs/order/names locked; N3-03 added the Git content tree `backend\content` (`v003`, 6 courses, 12 bilingual lessons, 2 SVGs) with `backend\tests\content.n3.test.mjs` (19 tests); N3-04 added the validated importer/publish/rollback (`backend\tests\content-import.n3.test.mjs`, 14 tests); N3-06 built the Flutter catalog/detail/lesson reader. Two N3 addenda landed after that: `POST /profile` provisioning and `POST /deleteAccount` (which executes the `data-model.md` section 7 purge and added the V-20 tombstone guard to `ensureProfile`); both are documented in `backend\docs\api-contract.md` 5.5/5.6 and `backend\docs\openapi.yaml`, with `delete-account.http.test.mjs` 9/9 and `functions/tests/delete-account.test.cjs` 3/3. The five UI gaps found by the test sweep are closed and verified on the physical device `RKGYC042G6T`. Do not widen the rules or add speculative indexes.
+> Key context: the project lives at `E:\Graduation_Project2_GitHub\networking-fundamentals` (Windows/PowerShell, git repo on `main`). Step 3 (N1-06...N1-12 Standardized API Contracts) is complete. **Step 4 (N2 Data model & security rules) is complete**: N2-01 `backend\docs\data-model.md`; N2-02 `backend\docs\schema-lock.md`; N2-03 424-doc fixtures (17/17 verify, 19/19 tests); N2-04 least-privilege `backend\firestore.rules`; N2-05 91-test rules suite (`backend\tests\firestore.rules.n2.test.mjs`); N2-06 11 composite indexes (`backend\firestore.indexes.json`) with a 20-test contract/query suite (`backend\tests\indexes.n2.test.mjs`); N2-07 23-test lifecycle suite (`backend\tests\lifecycle.n2.test.mjs`) plus `backend\docs\lifecycle-n2.md`. **Step 5 (N3) is in progress:** N3-01 locked the 6-course bilingual catalog (`backend\functions\scripts\catalog.cjs`, `backend\docs\catalog-n3.md`, 11 tests); N3-02 verified the approved-content read path (`backend\docs\content-read-n3.md`, `backend\tests\content-read.n3.test.mjs`, 34 tests): D-09 direct Firestore SDK reads, no Functions read endpoints; D-10 catalog IDs/order/names locked; N3-03 added the Git content tree `backend\content` (`v003`, 6 courses, 12 bilingual lessons, 2 SVGs) with `backend\tests\content.n3.test.mjs` (19 tests); N3-04 added the validated importer/publish/rollback (`backend\tests\content-import.n3.test.mjs`, 14 tests); N3-05 added the approved AI knowledge exporter (`backend\functions\scripts\ai-export.cjs`, `export-ai.cjs`, `backend\tests\ai-export.n3.test.mjs`, 9 tests, contract `backend\docs\ai-export-n3.md`); N3-06 built the Flutter catalog/detail/lesson reader. Two N3 addenda landed after that: `POST /profile` provisioning and `POST /deleteAccount` (which executes the `data-model.md` section 7 purge and added the V-20 tombstone guard to `ensureProfile`); both are documented in `backend\docs\api-contract.md` 5.5/5.6 and `backend\docs\openapi.yaml`, with `delete-account.http.test.mjs` 9/9 and `functions/tests/delete-account.test.cjs` 3/3. The five UI gaps found by the test sweep are closed and verified on the physical device `RKGYC042G6T`. Do not widen the rules or add speculative indexes.
 >
-> Your first action must be Step 0 of "Next Steps": start the emulators if needed (Auth 9099 / Firestore 8080 / Functions 5001, project `demo-networking-p1`), build, lint, run `fixtures:test`, `catalog:test`, and `content:test`, reseed, then run the 15-file 264-test command.
+> Your first action must be Step 0 of "Next Steps": start the emulators if needed (Auth 9099 / Firestore 8080 / Functions 5001, project `demo-networking-p1`), build, lint, run `fixtures:test`, `catalog:test`, `content:test`, and `ai:export:test`, reseed, then run the 16-file 273-test command.
 >
-> Then continue **Step 5 (N3)** with N3-05 (AI knowledge exporter). Confirmed queue: N3-05 AI exporter -> N3-07 content review. Do not reopen N2. Retention/purge automation, TTL, and deployment remain out of N3. Work one task at a time, show before/after, run build/lint/tests and paste real output, then give me exact PowerShell to reproduce. Never mark anything complete without evidence.
+> Then continue **Step 5 (N3)** with N3-07 (content review and first-course end-to-end teaching quality). Confirmed queue: N3-05 AI exporter (done) -> N3-07 content review. Do not reopen N2. Retention/purge automation, TTL, and deployment remain out of N3. Work one task at a time, show before/after, run build/lint/tests and paste real output, then give me exact PowerShell to reproduce. Never mark anything complete without evidence.

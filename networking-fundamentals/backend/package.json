@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "content:import:test": "node --test ./tests/content-import.n3.test.mjs"
+    "content:import:test": "node --test ./tests/content-import.n3.test.mjs",
+    "ai:export:test": "node --test ./tests/ai-export.n3.test.mjs"
   },
   "keywords": [],
   "author": "",
