@@ -7,6 +7,7 @@ import type {ApiErrorCode} from "./api-errors";
 import {authenticate} from "./auth";
 import {authorize} from "./authorization";
 import {ensureProfile} from "./profile";
+import {deleteAccountForUser} from "./delete-account";
 
 setGlobalOptions({maxInstances: 10});
 
@@ -96,11 +97,46 @@ export const profile = onRequest(async (request, response) => {
   const result = await ensureProfile(auth.user);
 
   if (!result.ok) {
-    sendApiError(response, "PROFILE_UNAVAILABLE");
+    sendApiError(response, result.code);
     return;
   }
 
   response.status(200).json(successResponse(result.profile));
+});
+
+// -------------------------------------------
+// Account Deletion Endpoint
+// -------------------------------------------
+
+export const deleteAccount = onRequest(async (request, response) => {
+  response.set("Cache-Control", "no-store");
+
+  if (request.method !== "POST") {
+    response.set("Allow", "POST");
+    sendApiError(response, "METHOD_NOT_SUPPORTED");
+    return;
+  }
+
+  const auth = await authenticate(request);
+
+  if (!auth.ok) {
+    sendApiError(response, auth.code);
+    return;
+  }
+
+  const result = await deleteAccountForUser(auth.user.uid);
+
+  if (!result.ok) {
+    sendApiError(response, result.code);
+    return;
+  }
+
+  response.status(200).json(
+    successResponse({
+      uid: result.uid,
+      status: result.status,
+    })
+  );
 });
 
 // -------------------------------------------

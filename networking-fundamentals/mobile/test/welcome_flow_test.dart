@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:networking_fundamentals/features/auth/login_screen.dart';
 import 'package:networking_fundamentals/features/auth/register_screen.dart';
 import 'package:networking_fundamentals/main.dart';
 
@@ -86,5 +87,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Passwords do not match.'), findsOneWidget);
+  });
+
+  testWidgets('login validates the required fields before calling Auth', (tester) async {
+    tester.view.physicalSize = const Size(800, 1800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const MaterialApp(home: LoginScreen()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Sign in securely'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Please enter your email.'), findsOneWidget);
+    expect(find.text('Please enter your password.'), findsOneWidget);
   });
 }

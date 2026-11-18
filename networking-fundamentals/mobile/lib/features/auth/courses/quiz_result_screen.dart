@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'ai_tutor_screen.dart';
+
 class QuizResultScreen extends StatelessWidget {
   const QuizResultScreen({super.key});
- Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Column(
+ Widget _buildNavItem(IconData icon, String label, bool isSelected, [VoidCallback? onTap]) {
+    final item = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
@@ -22,6 +24,12 @@ class QuizResultScreen extends StatelessWidget {
         ),
       ],
     );
+
+    if (onTap == null) {
+      return item;
+    }
+
+    return GestureDetector(onTap: onTap, child: item);
   }
   @override
   Widget build(BuildContext context) {
@@ -279,7 +287,13 @@ class QuizResultScreen extends StatelessWidget {
           children: [
             _buildNavItem(Icons.menu_book, 'Learn', true),
             _buildNavItem(Icons.grid_view_outlined, 'Tools', false),
-            _buildNavItem(Icons.psychology_outlined, 'AI Tutor', false),
+            _buildNavItem(Icons.psychology_outlined, 'AI Tutor', false, () {
+              // الاختبار أُرسل بالفعل: المحادثة متاحة مرة أخرى
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AiTutorScreen()),
+              );
+            }),
             _buildNavItem(Icons.person_outline, 'Profile', false),
           ],
         ),

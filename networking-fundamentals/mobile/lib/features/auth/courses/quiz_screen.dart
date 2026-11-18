@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ai_tutor_quiz_restriction_screen.dart';
 import 'quiz_submission_screen.dart';
 class QuizScreen extends StatefulWidget {
  
@@ -12,8 +13,8 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   int currentQuestionIndex = 6; // البدء من السؤال السابع (07 / 10) كما في ديزاين فيجما
   int? selectedOptionIndex; // مؤشر الإجابة المختارة
-Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Column(
+Widget _buildNavItem(IconData icon, String label, bool isSelected, [VoidCallback? onTap]) {
+    final item = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
@@ -32,6 +33,12 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
         ),
       ],
     );
+
+    if (onTap == null) {
+      return item;
+    }
+
+    return GestureDetector(onTap: onTap, child: item);
   }
   // قائمة أسئلة تجريبية للاختبار
   final List questions = [
@@ -438,7 +445,15 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
           children: [
             _buildNavItem(Icons.menu_book, 'Learn', true),
             _buildNavItem(Icons.grid_view_outlined, 'Tools', false),
-            _buildNavItem(Icons.psychology_outlined, 'AI Tutor', false),
+            _buildNavItem(Icons.psychology_outlined, 'AI Tutor', false, () {
+              // الامتحان شغال: شاشة وضع التركيز (Focus mode) بدل المحادثة
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AiTutorQuizRestrictionScreen(),
+                ),
+              );
+            }),
             _buildNavItem(Icons.person_outline, 'Profile', false),
           ],
         ),

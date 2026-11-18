@@ -81,6 +81,10 @@ test("every API error code has the documented status and message", () => {
       status: 503,
       message: "The profile service is temporarily unavailable.",
     },
+    DELETION_UNAVAILABLE: {
+      status: 503,
+      message: "The account deletion service is temporarily unavailable.",
+    },
   };
 
   assert.deepEqual(

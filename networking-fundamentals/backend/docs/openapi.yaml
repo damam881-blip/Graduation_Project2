@@ -16,7 +16,10 @@ info:
     adding correlation IDs to public bodies, is a breaking contract change
     that must be agreed and regression-tested before adoption.
 
-    All endpoints are GET-only and send `Cache-Control: no-store`.
+    All endpoints send `Cache-Control: no-store`. `GET /health`,
+    `GET /me`, `GET /studentAccess` and `GET /adminAccess` are GET-only;
+    `POST /profile` and `POST /deleteAccount` are POST-only and reject any
+    other method with `405 METHOD_NOT_SUPPORTED` plus `Allow: POST`.
 servers:
   - url: http://127.0.0.1:5001/demo-networking-p1/us-central1
     description: Local Firebase Functions emulator (host machine)
@@ -27,6 +30,8 @@ tags:
     description: Public operational endpoints
   - name: Auth
     description: Firebase ID token identity
+  - name: Profile
+    description: Server-side profile provisioning and account lifecycle
   - name: Authorization
     description: Role-gated demonstration endpoints
 paths:
@@ -146,6 +151,90 @@ paths:
           $ref: "#/components/responses/MethodNotAllowed"
         "503":
           $ref: "#/components/responses/AuthServiceUnavailable"
+  /profile:
+    post:
+      tags: [Profile]
+      summary: Creates or returns the caller's users/{uid} profile
+      description: |
+        Idempotent provisioning (api-contract.md section 5.5). The request
+        has no body; identity, role and timestamps come from the verified
+        token and the server clock. A UID that already has an
+        `accountTombstones/{uid}` document is rejected with `403 FORBIDDEN`
+        (V-20 tombstone guard), so a stale token cannot resurrect a
+        deleted or purged account.
+      operationId: postProfile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Profile exists after this call
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum: [no-store]
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileResponse"
+              example:
+                success: true
+                data:
+                  uid: verified-uid-example
+                  displayName: Verified User
+                  preferredLanguage: en
+                  role: student
+                  status: active
+                  created: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "405":
+          $ref: "#/components/responses/MethodNotSupported"
+        "503":
+          $ref: "#/components/responses/ProfileUnavailable"
+  /deleteAccount:
+    post:
+      tags: [Profile]
+      summary: Deletes the caller's account in the documented purge order
+      description: |
+        Executes the `data-model.md` section 7 sequence in one request
+        (api-contract.md section 5.6): tombstone + profile status in a
+        single transaction, Auth deletion, recursive purge of the five
+        private subcollections, profile removal, then the tombstone
+        advances to `purged` and is never deleted. The client must
+        re-authenticate with the password immediately before calling.
+        A retry after a partial failure resumes; a tombstone already in
+        `purged` state fails closed with `403`.
+      operationId: postDeleteAccount
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: The full purge ran during this request
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                enum: [no-store]
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteAccountResponse"
+              example:
+                success: true
+                data:
+                  uid: verified-uid-example
+                  status: purged
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "405":
+          $ref: "#/components/responses/MethodNotSupported"
+        "503":
+          $ref: "#/components/responses/DeletionUnavailable"
 components:
   securitySchemes:
     bearerAuth:
@@ -165,7 +254,10 @@ components:
         - INVALID_TOKEN
         - FORBIDDEN
         - METHOD_NOT_ALLOWED
+        - METHOD_NOT_SUPPORTED
         - AUTH_SERVICE_UNAVAILABLE
+        - PROFILE_UNAVAILABLE
+        - DELETION_UNAVAILABLE
     ApiFailure:
       type: object
       required: [success, error]
@@ -254,6 +346,58 @@ components:
             role:
               type: string
               enum: [admin]
+    ProfileResponse:
+      type: object
+      required: [success, data]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [uid, preferredLanguage, role, status, created]
+          additionalProperties: false
+          properties:
+            uid:
+              type: string
+              description: UID from the verified token, never from the request.
+            displayName:
+              type: string
+              nullable: true
+              description: Trimmed `name` claim capped at 80 characters.
+            preferredLanguage:
+              type: string
+              enum: [en, ar]
+            role:
+              type: string
+              enum: [student]
+            status:
+              type: string
+              enum: [active]
+            created:
+              type: boolean
+              description: True only when this call created the document.
+    DeleteAccountResponse:
+      type: object
+      required: [success, data]
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [uid, status]
+          additionalProperties: false
+          properties:
+            uid:
+              type: string
+              description: UID from the verified token, never from the request.
+            status:
+              type: string
+              enum: [purged]
+              description: Terminal tombstone state reached by this request.
   responses:
     Unauthorized:
       description: |
@@ -286,7 +430,8 @@ components:
       description: |
         The caller is authenticated but is not a current holder of the
         required role, the live role differs from the token role, the account
-        is disabled, or the account no longer exists.
+        is disabled, the account no longer exists, or a deletion tombstone
+        exists for the UID (V-20 guard).
       headers:
         Cache-Control:
           schema:
@@ -339,3 +484,61 @@ components:
             error:
               code: AUTH_SERVICE_UNAVAILABLE
               message: Authorization service is temporarily unavailable.
+    MethodNotSupported:
+      description: The endpoint only accepts POST.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+        Allow:
+          schema:
+            type: string
+            enum: [POST]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          example:
+            success: false
+            error:
+              code: METHOD_NOT_SUPPORTED
+              message: This HTTP method is not supported for this endpoint.
+    ProfileUnavailable:
+      description: |
+        Firestore rejected or failed the profile read/create. This is an
+        availability failure, not a permission decision, and the client
+        may retry.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          example:
+            success: false
+            error:
+              code: PROFILE_UNAVAILABLE
+              message: The profile service is temporarily unavailable.
+    DeletionUnavailable:
+      description: |
+        An unexpected failure occurred while writing the tombstone,
+        deleting the Auth user, or purging user data. The deletion is
+        resumable: a retry continues the sequence from the tombstone.
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum: [no-store]
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiFailure"
+          example:
+            success: false
+            error:
+              code: DELETION_UNAVAILABLE
+              message: The account deletion service is temporarily unavailable.

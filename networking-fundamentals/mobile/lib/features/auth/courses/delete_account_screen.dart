@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../../core/api/account_api.dart';
+import '../../../core/api/api_client.dart';
+import '../welcome_screen.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -9,7 +14,154 @@ class DeleteAccountScreen extends StatefulWidget {
 
 class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   bool isConfirmedChecked = false;
+  bool _isDeleting = false;
   final TextEditingController deleteController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    deleteController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _showError(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  /// Clears the local session and returns to the welcome screen after a
+  /// successful (or already-completed) deletion.
+  Future<void> _finishDeletion({required bool alreadyDeleted}) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (_) {
+      // The Auth account may already be gone; the local session is
+      // cleared by navigation regardless.
+    }
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          alreadyDeleted
+              ? 'This account was already deleted.'
+              : 'Your account has been deleted.',
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+      (route) => false,
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    if (_isDeleting) return;
+
+    if (passwordController.text.isEmpty) {
+      _showError('Enter your password to continue.');
+      return;
+    }
+
+    if (deleteController.text.trim() != 'DELETE') {
+      _showError('Type DELETE to confirm.');
+      return;
+    }
+
+    if (!isConfirmedChecked) {
+      _showError('Please confirm that you understand this is permanent.');
+      return;
+    }
+
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null || user.email == null) {
+        _showError('No signed-in account to delete.');
+        return;
+      }
+
+      // Re-authentication precondition for POST /deleteAccount
+      // (api-contract.md §5.6).
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: passwordController.text,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      if (!mounted) return;
+
+      final result = await AccountApi.deleteAccount();
+
+      if (!mounted) return;
+
+      if (result is ApiFailure) {
+        if (result.status == 401 || result.status == 403) {
+          // The account is already gone: clear the local session.
+          await _finishDeletion(alreadyDeleted: true);
+        } else if (result.isRetryable) {
+          _showError(
+            'Deletion is temporarily unavailable. ${result.message} '
+            'Please try again.',
+          );
+        } else {
+          _showError(result.message);
+        }
+        return;
+      }
+
+      await _finishDeletion(alreadyDeleted: false);
+    } on FirebaseAuthException catch (e) {
+      String message;
+
+      switch (e.code) {
+        case 'wrong-password':
+        case 'invalid-credential':
+        case 'invalid-login-credentials':
+          message = 'The password is incorrect.';
+          break;
+        case 'user-mismatch':
+          message = 'This account no longer matches the signed-in user.';
+          break;
+        case 'requires-recent-login':
+          message = 'Please sign in again before deleting your account.';
+          break;
+        case 'too-many-requests':
+          message = 'Too many attempts. Please try again later.';
+          break;
+        case 'network-request-failed':
+          message = 'Cannot connect to the Firebase Emulator.';
+          break;
+        default:
+          message = e.message ?? 'Re-authentication failed.';
+      }
+
+      _showError(message);
+    } catch (e) {
+      _showError('Unexpected error: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +238,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
               const Text('Confirm your password', style: TextStyle(fontSize: 11, color: Colors.grey)),
               const SizedBox(height: 4),
               TextField(
+                controller: passwordController,
                 obscureText: true,
                 style: const TextStyle(color: Colors.white, fontSize: 13),
                 decoration: InputDecoration(
@@ -139,11 +292,25 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 width: double.infinity,
                 height: 46,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.warning, size: 16, color: Colors.white),
-                  label: const Text('Permanently delete account', style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)),
+                  onPressed: _isDeleting ? null : _deleteAccount,
+                  icon: _isDeleting
+                      ? const SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.warning, size: 16, color: Colors.white),
+                  label: Text(
+                    _isDeleting ? 'Deleting account…' : 'Permanently delete account',
+                    style: const TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.redAccent.withValues(alpha: 0.8),
+                    disabledBackgroundColor:
+                        Colors.redAccent.withValues(alpha: 0.4),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                 ),

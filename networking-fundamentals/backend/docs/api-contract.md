@@ -3,7 +3,7 @@
 **Owner:** Developer A (backend)
 **Audience:** Developer B (Flutter), both developers during defense preparation
 **Machine-readable companion:** [`openapi.yaml`](./openapi.yaml)
-**Status:** matches the currently implemented and tested backend (N1-06..N1-09 verified; content-read section updated by N3-01).
+**Status:** matches the currently implemented and tested backend (N1-06..N1-09 verified; content-read section updated by N3-01; `POST /profile` and `POST /deleteAccount` added by the N3 addenda).
 
 ---
 
@@ -22,9 +22,9 @@
 | From the Android device over LAN (N7) | `http://<laptop-LAN-IP>:5001/demo-networking-p1/us-central1` |
 
 - Project ID: `demo-networking-p1` (emulator-only demo project).
-- All endpoints are **GET-only**.
+- `GET /health`, `GET /me`, `GET /studentAccess` and `GET /adminAccess` are **GET-only**; `POST /profile` and `POST /deleteAccount` are **POST-only** (§5.5, §5.6).
 - Every response sets `Cache-Control: no-store`.
-- A `405` response also sets `Allow: GET`.
+- A `405` response also sets `Allow: GET` (GET-only endpoints) or `Allow: POST` (POST-only endpoints).
 - `127.0.0.1` is correct for the laptop only. The phone must use the laptop's LAN IP (N7-01).
 
 ## 3. Response envelopes
@@ -58,11 +58,12 @@ Every response is exactly one of these two shapes. No other top-level keys exist
 |---|---|---|---|
 | `UNAUTHENTICATED` | 401 | A valid Bearer token is required. | No `Authorization` header, or not exactly `Bearer <token>` |
 | `INVALID_TOKEN` | 401 | The authentication token is invalid. | Token supplied but rejected (invalid, expired, revoked, disabled account) |
-| `FORBIDDEN` | 403 | You do not have permission to access this resource. | Authenticated but not a current holder of the required role; live role ≠ token role; disabled account; account deleted |
+| `FORBIDDEN` | 403 | You do not have permission to access this resource. | Authenticated but not a current holder of the required role; live role ≠ token role; disabled account; account deleted; a deletion tombstone exists for the UID (V-20 guard) |
 | `METHOD_NOT_ALLOWED` | 405 | Only GET requests are supported. | Any verb other than GET on a GET-only endpoint (HTTP method is checked before authentication) |
 | `METHOD_NOT_SUPPORTED` | 405 | This HTTP method is not supported for this endpoint. | Any verb other than POST on `POST /profile`. Kept separate because `METHOD_NOT_ALLOWED`'s message is GET-specific and is already asserted byte-for-byte |
 | `AUTH_SERVICE_UNAVAILABLE` | 503 | Authorization service is temporarily unavailable. | Unexpected failure while reading the current user record |
 | `PROFILE_UNAVAILABLE` | 503 | The profile service is temporarily unavailable. | Firestore rejected or failed the profile read/create |
+| `DELETION_UNAVAILABLE` | 503 | The account deletion service is temporarily unavailable. | Unexpected failure while writing the tombstone, deleting the Auth user, or purging user data during `POST /deleteAccount` |
 
 `message` is human-readable and may be displayed, but **clients must branch on `code`**, never on `message` text.
 
@@ -177,6 +178,58 @@ brand-new account still receives `403` from `/studentAccess` until the role
 claim is assigned. Role assignment is an authorization decision, not a profile
 write, and belongs to the N4/N5 work.
 
+### 5.6 `POST /deleteAccount` — delete the caller's account
+
+Requires `Authorization: Bearer <Firebase ID token>`. The request has **no
+body**; any body is ignored.
+
+**Client precondition:** re-authenticate with the account password
+(`EmailAuthProvider` → `reauthenticateWithCredential`) immediately before
+calling this endpoint. The MVP server trusts the verified token; token
+revocation is the separate F-01 finding.
+
+`200` — the full purge ran during this request:
+```json
+{
+  "success": true,
+  "data": {
+    "uid": "verified-uid-example",
+    "status": "purged"
+  }
+}
+```
+
+One call executes the documented purge order (`data-model.md` §7):
+
+1. `accountTombstones/{uid}` with `status: "deleted"` and the profile's
+   `status: "deleted"` are written in **one transaction**, before anything
+   is purged. The tombstone records `requestedAt`, `deletedAt`,
+   `purgeAfter` (30-day grace), `reason: "userRequest"`, `lastKnownRole`
+   and a generated `requestId`.
+2. The Firebase Auth user is deleted; `auth/user-not-found` is tolerated.
+   `authDeletedAt` is stamped on the tombstone.
+3. The five private subcollections are purged recursively:
+   `courseProgress`, `lessonProgress`, `attempts`, `quizState`,
+   `idempotency`.
+4. The profile document is deleted.
+5. The tombstone advances to `status: "purged"` (with `purgedAt`) and is
+   **never deleted**.
+
+Behavior notes:
+
+- **Resumable:** a retry after a partial failure finds the tombstone in
+  `deleted` state and continues the sequence instead of failing.
+- **Fail closed:** a tombstone already in `purged` state returns `403`
+  (`FORBIDDEN`) and no further writes happen.
+- **V-20 guard:** `POST /profile` refuses to run for any UID that has a
+  tombstone (`403` `FORBIDDEN`), so a stale token cannot recreate a
+  deleted or purged profile.
+- `401` → `UNAUTHENTICATED` / `INVALID_TOKEN` (the Auth emulator also
+  rejects tokens of deleted users, so a repeat call usually fails here)
+- `403` → `FORBIDDEN`
+- `405` → `METHOD_NOT_SUPPORTED` with `Allow: POST`
+- `503` → `DELETION_UNAVAILABLE` (retryable; the retry resumes)
+
 ## 6. Flutter client contract (Developer B)
 
 1. **Token handling**
@@ -230,6 +283,12 @@ final class ApiFailure extends ApiResult<Never> {
    reported as a failed registration: the Auth account already exists. Surface
    it as a retryable warning and let the user continue.
 
+8. **Account deletion** — re-authenticate with the password first, call
+   `POST /deleteAccount` once, and only then clear the local session and
+   route to welcome. Branch on `error.code`: `DELETION_UNAVAILABLE` (503)
+   is retryable because the backend resumes; `401`/`403` means the account
+   is already gone — sign out locally and route to welcome.
+
 ## 7. Verification evidence
 
 The contract above is enforced by automated tests (run after `npm run build`):
@@ -247,6 +306,19 @@ Profile provisioning (N3 addendum) is covered by
 ```powershell
 cd E:\Graduation_Project2_GitHub\networking-fundamentals\backend
 node --test .\tests\profile.http.test.mjs
+```
+
+Account deletion (N3 addendum 2) is covered by
+`tests/delete-account.http.test.mjs` (9 tests: method, auth, full purge
+order, fail-closed repeat, stale-token rejection, tombstone write denial,
+live-token tombstone guard) and `functions/tests/delete-account.test.cjs`
+(3 tests: full purge, resume, fail-closed `FORBIDDEN`):
+
+```powershell
+cd E:\Graduation_Project2_GitHub\networking-fundamentals\backend
+node --test .\tests\delete-account.http.test.mjs
+cd .\functions
+node --test .\tests\delete-account.test.cjs
 ```
 
 The unit tests fail if the envelope gains an undocumented field, if a status/message mapping changes, or if a code is added without updating the documented catalog.

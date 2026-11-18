@@ -3,7 +3,7 @@ import 'subnet_calculator_screen.dart';
 import 'ai_tutor_screen.dart';
 import 'ai_tutor_quiz_restriction_screen.dart';
 import 'profile_screen.dart';
-// import 'learning_path_screen.dart'; // اكتبي استيراد صفحة الـ Learn بتاعتك هنا
+import 'learning_path_screen.dart'; // صفحة الـ Learn (مسار التعلم)
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex; // لتحديد أي أيقونة تكون منورة (0 للـ Learn، 1 للـ Tools، 2 للـ AI، 3 للـ Profile)
@@ -29,8 +29,10 @@ class CustomBottomNavBar extends StatelessWidget {
           // 1. زرار Learn (ينقل لصفحة المسار التعليمي)
           _buildNavItem(context, Icons.menu_book, 'Learn', currentIndex == 0, () {
             if (currentIndex != 0) {
-              // استبدلي LearningPathScreen باسم صفحة المسار الأساسية عندك
-              // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LearningPathScreen()));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LearningPathScreen()),
+              );
             }
           }),
 

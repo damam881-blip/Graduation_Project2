@@ -1,7 +1,51 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SignOutScreen extends StatelessWidget {
+import '../welcome_screen.dart';
+
+class SignOutScreen extends StatefulWidget {
   const SignOutScreen({super.key});
+
+  @override
+  State<SignOutScreen> createState() => _SignOutScreenState();
+}
+
+class _SignOutScreenState extends State<SignOutScreen> {
+  bool _isSigningOut = false;
+
+  /// Ends the Firebase Auth session and returns to the welcome screen.
+  Future<void> _confirmSignOut() async {
+    setState(() {
+      _isSigningOut = true;
+    });
+
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      if (!mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sign out failed. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSigningOut = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,15 +143,23 @@ class SignOutScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 46,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // إجراء تسجيل الخروج والعودة للبداية
-                    Navigator.pop(context);
-                  },
+                  onPressed: _isSigningOut ? null : _confirmSignOut,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0284C7),
+                    disabledBackgroundColor:
+                        const Color(0xFF0284C7).withValues(alpha: 0.5),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: const Text('Confirm sign out', style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: _isSigningOut
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Confirm sign out', style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: 10),
@@ -115,7 +167,7 @@ class SignOutScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 46,
                 child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: _isSigningOut ? null : () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Color(0xFF1E293B)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

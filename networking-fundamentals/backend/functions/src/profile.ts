@@ -24,7 +24,7 @@ export type ProfileView = {
 
 export type EnsureProfileResult =
   | {ok: true; profile: ProfileView}
-  | {ok: false};
+  | {ok: false; code: "FORBIDDEN" | "PROFILE_UNAVAILABLE"};
 
 const DISPLAY_NAME_MAX = 80;
 const ALREADY_EXISTS = 6;
@@ -78,14 +78,26 @@ function toProfileView(
  * only be created here, with the Admin SDK, from verified token data. Server
  * owned fields never come from the request body.
  *
+ * V-20 tombstone guard: the presence of `accountTombstones/{uid}` fails
+ * closed before any read or write, so a still-valid token cannot resurrect
+ * a deleted or purged account (data-model.md section 7).
+ *
  * @param {DecodedIdToken} token - Verified Firebase Auth token.
- * @return {Promise<EnsureProfileResult>} Profile or a retryable failure.
+ * @return {Promise<EnsureProfileResult>} Profile or a safe failure.
  */
 export async function ensureProfile(
   token: DecodedIdToken
 ): Promise<EnsureProfileResult> {
   const uid = token.uid;
   const reference = getFirestore().collection("users").doc(uid);
+  const tombstone = await getFirestore()
+    .collection("accountTombstones")
+    .doc(uid)
+    .get();
+
+  if (tombstone.exists) {
+    return {ok: false, code: "FORBIDDEN"};
+  }
 
   const existing = await reference.get();
 
@@ -121,14 +133,14 @@ export async function ensureProfile(
         undefined;
 
     if (code !== ALREADY_EXISTS) {
-      return {ok: false};
+      return {ok: false, code: "PROFILE_UNAVAILABLE"};
     }
 
     // A concurrent call won the race; return its document.
     const raced = await reference.get();
 
     if (!raced.exists) {
-      return {ok: false};
+      return {ok: false, code: "PROFILE_UNAVAILABLE"};
     }
 
     return {

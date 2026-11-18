@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:networking_fundamentals/features/auth/courses/quiz_result_screen.dart';
 import 'package:networking_fundamentals/features/auth/courses/quiz_screen.dart';
+import 'package:networking_fundamentals/features/auth/courses/quiz_submission_screen.dart';
 
 void main() {
   Future<void> pumpQuiz(WidgetTester tester) async {
@@ -65,5 +67,50 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('06 / 10'), findsOneWidget);
+  });
+
+  testWidgets('AI tutor opens focus mode while the quiz is active', (tester) async {
+    await pumpQuiz(tester);
+
+    await tester.tap(find.text('AI Tutor'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Focus mode is on'), findsOneWidget);
+    expect(find.text('Return to my quiz'), findsOneWidget);
+  });
+
+  testWidgets('submission screen blocks the tutor behind focus mode', (tester) async {
+    tester.view.physicalSize = const Size(800, 1800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      const MaterialApp(home: QuizSubmissionScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('AI Tutor'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Focus mode is on'), findsOneWidget);
+  });
+
+  testWidgets('result screen reopens the tutor after submission', (tester) async {
+    tester.view.physicalSize = const Size(800, 1800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      const MaterialApp(home: QuizResultScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('AI Tutor'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your networking tutor'), findsOneWidget);
+    expect(find.text('General chat'), findsOneWidget);
   });
 }

@@ -5,8 +5,10 @@ publish/rollback/retention contract.
 **Status:** implemented and verified in the emulator; deployment and runtime
 enforcement are out of scope (see section 1).
 **Files added:** `backend\tests\lifecycle.n2.test.mjs` (23 tests), this document.
-**Files unchanged:** `firestore.rules`, Functions source, existing tests,
-`firestore.indexes.json`.
+**Files unchanged at N2-07:** `firestore.rules`, Functions source, existing tests,
+`firestore.indexes.json`. (Superseded by the N3 addendum in section 1:
+`POST /deleteAccount` added `functions\src\delete-account.ts` and touched
+`index.ts` / `profile.ts`.)
 
 ---
 
@@ -18,9 +20,14 @@ Normative inputs:
 - `data-model.md` section 9 (atomic publish, rollback, retention).
 - `schema-lock.md` V-20 (tombstone guard).
 
-The MVP API still has only the auth/authorization endpoints. There is no
-user-data mutation endpoint, publish endpoint, or purge job to call. N2-07
-therefore verifies the **contract** end to end against the real rules:
+At N2-07 time the MVP API had only the auth/authorization endpoints: no
+user-data mutation endpoint, publish endpoint, or purge job to call.
+**N3 addendum:** `POST /deleteAccount` now executes the section 7 purge
+sequence in production code (`functions\src\delete-account.ts`, contract in
+`api-contract.md` §5.6), and `ensureProfile` enforces the V-20 tombstone
+guard (a tombstone fails closed with `403 FORBIDDEN`). N2-07 verifies the
+**contract** end to end against the real rules, independently of that
+endpoint:
 
 | Area | Verified in N2-07 | Deferred |
 |---|---|---|
@@ -28,7 +35,7 @@ therefore verifies the **contract** end to end against the real rules:
 | Purge order | yes (intermediate states asserted) | automated job |
 | Auth deletion | yes (Auth emulator) | token revocation before expiry (F-01) |
 | Data purge and tombstone retention | yes | scheduled/manual retention tooling |
-| V-20 runtime guard | precondition + client fail-closed | guard inside mutation endpoints (N4/N5) |
+| V-20 runtime guard | precondition + client fail-closed | guard inside the remaining mutation endpoints (N4/N5) |
 | Publish atomicity | yes (transaction + visibility) | publish endpoint (N4/N5) |
 | Rollback | yes | rollback endpoint (N4/N5) |
 | Retention policy | reference algorithm + tests | purge job |

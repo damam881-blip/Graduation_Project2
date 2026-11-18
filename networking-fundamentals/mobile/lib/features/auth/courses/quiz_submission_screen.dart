@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'ai_tutor_quiz_restriction_screen.dart';
 import 'quiz_result_screen.dart';
 
 class QuizSubmissionScreen extends StatelessWidget {
   const QuizSubmissionScreen({super.key});
-Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Column(
+Widget _buildNavItem(IconData icon, String label, bool isSelected, [VoidCallback? onTap]) {
+    final item = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
@@ -23,6 +24,12 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
         ),
       ],
     );
+
+    if (onTap == null) {
+      return item;
+    }
+
+    return GestureDetector(onTap: onTap, child: item);
   }
   @override
   Widget build(BuildContext context) {
@@ -313,7 +320,15 @@ Widget _buildNavItem(IconData icon, String label, bool isSelected) {
           children: [
             _buildNavItem(Icons.menu_book, 'Learn', true),
             _buildNavItem(Icons.grid_view_outlined, 'Tools', false),
-            _buildNavItem(Icons.psychology_outlined, 'AI Tutor', false),
+            _buildNavItem(Icons.psychology_outlined, 'AI Tutor', false, () {
+              // لم يُرسل الاختبار بعد: شاشة وضع التركيز (Focus mode)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AiTutorQuizRestrictionScreen(),
+                ),
+              );
+            }),
             _buildNavItem(Icons.person_outline, 'Profile', false),
           ],
         ),

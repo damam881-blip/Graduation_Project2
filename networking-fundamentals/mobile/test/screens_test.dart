@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:networking_fundamentals/features/auth/courses/ai_tutor_screen.dart';
 import 'package:networking_fundamentals/features/auth/courses/custom_bottom_nav_bar.dart';
+import 'package:networking_fundamentals/features/auth/courses/delete_account_screen.dart';
 import 'package:networking_fundamentals/features/auth/courses/learning_path_screen.dart';
 import 'package:networking_fundamentals/features/auth/courses/profile_screen.dart';
 import 'package:networking_fundamentals/main_navigation_screen.dart';
@@ -115,5 +116,48 @@ void main() {
 
     expect(find.text('Your networking tutor'), findsOneWidget);
     expect(find.text('General chat'), findsOneWidget);
+  });
+
+  testWidgets('bottom navigation opens the learning path from another tab', (tester) async {
+    await pumpWithLargeSurface(
+      tester,
+      const Scaffold(body: CustomBottomNavBar(currentIndex: 1)),
+    );
+
+    await tester.tap(find.text('Learn'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your learning path'), findsOneWidget);
+  });
+
+  testWidgets('delete account validates every confirmation before acting', (tester) async {
+    await pumpWithLargeSurface(tester, const DeleteAccountScreen());
+
+    await tester.tap(find.text('Permanently delete account'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Enter your password to continue.'), findsOneWidget);
+
+    // Let the queued SnackBar expire before the next validation round.
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(0), 'SomePassword1!');
+    await tester.tap(find.text('Permanently delete account'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Type DELETE to confirm.'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).at(1), 'DELETE');
+    await tester.tap(find.text('Permanently delete account'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Please confirm that you understand this is permanent.'),
+      findsOneWidget,
+    );
   });
 }
